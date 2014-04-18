@@ -1,0 +1,7 @@
+sbin
+usr/sbin
+usr/lib/lilo
+usr/share/pixmaps
+usr/share/lilo
+etc/initramfs
+etc/kernel

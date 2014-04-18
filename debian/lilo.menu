@@ -1,0 +1,7 @@
+?package(lilo):needs="text" section="Applications/System/Administration" \
+   title="Lilo-config" \
+   longtitle="Configure LInux LOader"\
+   description="Configure the LInux boot LOader that will be activated\
+ next time you boot."\
+   command="su-to-root -p root -c /usr/sbin/liloconfig" \
+   icon="/usr/share/pixmaps/lilo-term.xpm"

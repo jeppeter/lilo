@@ -1,0 +1,36 @@
+Source: lilo
+Section: admin
+Priority: optional
+Maintainer: Joachim Wiedorn <ad_debian@joonet.de>
+Build-Depends: debhelper (>= 9),
+ transfig, bin86 (>= 0.16), sharutils,
+ po-debconf (>= 0.5.0), libdevmapper-dev
+Standards-Version: 3.9.4
+Homepage: http://lilo.alioth.debian.org/
+Vcs-Git: git://anonscm.debian.org/lilo/debian.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=lilo/debian.git
+
+Package: lilo
+Architecture: amd64 i386
+Pre-Depends: dpkg (>= 1.15.7.2)
+Depends: ${perl:Depends}, ${shlibs:Depends}, ${misc:Depends}
+Description: LInux LOader - the classic OS boot loader
+ You can use LILO to manage your Master Boot Record (with a simple text
+ screen, text menu or colorful splash graphics) or call LILO from other 
+ Boot-Loaders to jump-start the Linux kernel.
+ .
+ This package contains lilo (the installer) and boot-record-images to
+ install Linux, DOS and generic Boot Sectors for other operation systems.
+ .
+
+Package: lilo-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: LInux LOader - Documentation for the classic OS boot loader
+ You can use LILO to manage your Master Boot Record (with a simple text 
+ screen, text menu or colorful splash graphics) or call LILO from other 
+ Boot-Loaders to jump-start the Linux kernel.
+ .
+ This package contains the old HTML and README documentations of lilo
+ version 21.5 (of year 2000).

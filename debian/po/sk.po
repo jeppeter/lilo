@@ -1,0 +1,131 @@
+# Slovak translation for lilo debconf template.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the lilo package.
+#
+# Ivan Masár <helix84@centrum.sk>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lilo\n"
+"Report-Msgid-Bugs-To: lilo@packages.debian.org\n"
+"POT-Creation-Date: 2011-03-14 15:48+0100\n"
+"PO-Revision-Date: 2012-02-24 13:45+0100\n"
+"Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
+"Language-Team: Slovak <debian-l10n-slovak@lists.debian.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid "LILO configuration"
+msgstr "Konfigurácia LILO"
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid ""
+"It seems to be your first LILO installation. It is absolutely necessary to "
+"run liloconfig(8) when you complete this process and execute /sbin/lilo "
+"after this."
+msgstr ""
+"Zdá sa, že toto je vaša prvá inštalácia LILO. Je úplne nevyhnutné po jej "
+"dokončení spustiť liloconfig(8) a potom /sbin/lilo."
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid "LILO won't work if you don't do this."
+msgstr "LILO nbuide fungovať, ak tak nespravíte."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid "Do you want to add the large-memory option?"
+msgstr "Chcete pridať voľbu large-memory?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"Usually LILO loads the initrd file into the first 15MB of memory to avoid a "
+"BIOS limitation with older systems (earlier than 2001 and few systems until "
+"2004)."
+msgstr ""
+"Zvyčajne LILO načíta súbor initrd do prvých 15MB pamäte, aby sa vyhol "
+"obmedzeniam BIOSu na starších systémoch (starších ako 2001 a niekoľkých "
+"systémov do 2004)."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"With newer kernels the combination of kernel and initrd may not fit into the "
+"first 15MB of memory. LILO will compute the needed size of memory and will "
+"automatically use the memory above 15MB, too, if there is enough physical "
+"memory."
+msgstr ""
+"Pri novších jadrách sa kombinácia jadra a initrd nemusí zmestiť do prvých "
+"15MB pamäte. LILO vypočíta potrebnú veľkosť pamäte a automaticky použije aj "
+"pamäť nad 15MB v prípade nedostatku pamäte."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"If this machine has a recent BIOS without a 15MB limitation and you want to "
+"use memory above 15MB for all kernels, set the 'large-memory' option."
+msgstr ""
+"Akmá tento počítač pomerne nový BIOS bez obmedzenia na 15MB a chcete použiť "
+"pamäť nad 15MB pre všetky jadrá, nastavte voľbu „large-memory“."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid "Do you want to run /sbin/lilo now?"
+msgstr "Chcete spustiť /sbin/lilo teraz?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid ""
+"It was detected that it's necessary to run /sbin/lilo in order to activate "
+"the new LILO configuration."
+msgstr ""
+"Zistilo sa, že je nevyhnutné spustiť /sbin/lilo, aby sa aktivovala nová "
+"konfigurácia LILO."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid ""
+"WARNING: This procedure will write data in your MBR and may overwrite some "
+"data there. If you skip this step, you must run /sbin/lilo before rebooting "
+"your computer, or your system may not boot again."
+msgstr ""
+"UPOZORNENIE: Táto procedúra zapíše dáta do vášej hlavnej zavádzacej oblasti "
+"(MBR) a môže prepísať dáta, ktoré sa tam nachádzajú. Ak tento krok "
+"preskočíte, musíte spustiť /sbin/lilo predtým, než reštartujete váš počítač, "
+"inak váš systém nemusí znova naštartovať."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:4001
+msgid "Do you want to convert boot and root options?"
+msgstr "Chcete skonvertovať voľby boot a root?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:4001
+msgid ""
+"Since kernel using the newer disk interface 'libata' you need the newer "
+"DiskID and/or UUID in your /etc/lilo.conf for the boot and root options. For "
+"the most modern systems you should use this conversion and then run '/sbin/"
+"lilo'."
+msgstr ""
+"Keďže jadro používa novšie diskové rozhranie „libata“, potrebujete novší "
+"DiskID a/alebo UUID vo voľbách boot a root vo vašom /etc/lilo.conf. Na "
+"väčšine moderných systémov by ste mali zvoliť konverziu a následne spustiť „/"
+"sbin/lilo“."

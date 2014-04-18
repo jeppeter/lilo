@@ -1,0 +1,69 @@
+Package:     lilo
+Subject:     use of newer debhelper 7.0.50 and above
+Author:      Joachim Wiedorn <ad_debian at joonet.de>
+Forwarded:   no
+Last-Update: 2011-05-06
+
+With the possibilities of debhelper of 7.0.50 and above and some
+direct patches in the sources the rules can be reduced to few
+lines.
+---
+
+diff -urN s08/images/Makefile s09/images/Makefile
+--- s08/images/Makefile	2011-05-06 17:40:18.924705158 +0200
++++ s09/images/Makefile	2011-05-06 17:45:57.304713832 +0200
+@@ -23,11 +23,11 @@
+ install: all
+ 	mkdir -p $$DESTDIR$(BOOT_DIR)
+ 	install -m 0644  $(BMPS4) $(BMPS8)  $$DESTDIR$(BOOT_DIR)
+-	for i in $(NAME8); do
+-		cp $(NAME8)_256c.dat $$DESTDIR$(BOOT_DIR)
++	for i in $(NAME8); do \
++		cp $${i}_256c.dat $$DESTDIR$(BOOT_DIR)/$${i}.dat; \
+ 	done
+-	for i in $(NAME4); do
+-		cp $(NAME4)_16c.dat $$DESTDIR$(BOOT_DIR)
++	for i in $(NAME4); do \
++		cp $${i}_16c.dat $$DESTDIR$(BOOT_DIR)/$${i}.dat; \
+ 	done
+ 
+ clean:
+@@ -37,4 +37,7 @@
+ 
+ uninstall:
+ 	(cd $$DESTDIR$(BOOT_DIR); rm -f $(BMPS4) $(BMPS8))
++	for i in $(NAME4) $(NAME8); do \
++		rm -f $$DESTDIR$(BOOT_DIR)/$${i}.dat; \
++	done
+ 
+diff -urN s08/Makefile s09/Makefile
+--- s08/Makefile	2011-04-09 17:14:05.000000000 +0200
++++ s09/Makefile	2011-05-06 17:45:57.304713832 +0200
+@@ -8,6 +8,13 @@
+ #
+ 
+ #
++# everything needed to run, just short of installation
++#
++all: test
++	make -C src all
++	make -C images all
++
++#
+ #  make help
+ #
+ help:
+@@ -34,13 +42,6 @@
+ 	@echo ""
+ 
+ #
+-# everything needed to run, just short of installation
+-#
+-all: test
+-	$(MAKE) -C src all
+-	$(MAKE) -C images all
+-
+-#
+ # everything above plus the statically linked version
+ #
+ alles: test

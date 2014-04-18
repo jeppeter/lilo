@@ -1,0 +1,13 @@
+Document: lilo-doc
+Title: Old LILO Documentation
+Author: Werner Almesberger, John Coffman
+Abstract: This documentations describe the functionality and
+ usage of old version 21.5 of the program and bootloader lilo.
+Section: System/Administration
+
+Format: Text
+Files: /usr/share/doc/lilo-doc/README*
+
+Format: html
+Index: /usr/share/doc/lilo-doc/html/user_21-5.html
+Files: /usr/share/doc/lilo-doc/html/user*.html

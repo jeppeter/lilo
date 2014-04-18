@@ -1,0 +1,2085 @@
+lilo (1:24.0-2) unstable; urgency=medium
+
+  * Fix: compiler option 'freestanding' must be used with cpp
+      (in patch 11_add-compile-flags.patch). Closes: #713504
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Tue, 02 Jul 2013 21:13:11 +0200
+
+lilo (1:24.0-1) unstable; urgency=low
+
+  * New upstream release:
+    - Fixes of manpages, added manpages.
+    - Old documentation now in html format.
+    - Better support for GPT hard disks.
+    - Support for kernel 3.x series.
+    - Now compatible to gcc 4.8 (and higher). Closes: #701315, #709818
+  * Update some patches, remove some patches.
+  * Use upstream html doc for lilo-doc package.
+  * Update debian/copyright file.
+  * debian/control:
+    - Bump to Standards Version 3.9.4 (no changes).
+    - Remove suggestion to package lilo-doc.
+    - Move to debhelper >=9.
+  * Fix: add full support for CFLAGS and LDFLAGS
+      to support hardening flags.
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Sat, 08 Jun 2013 14:27:16 +0200
+
+lilo (1:23.2-4) unstable; urgency=medium
+
+  * Enable use of linux 3.x in liloconfig script.
+  * Disable creating pdf documentation.  (Closes: #666320)
+  * Remove build dependency to texlive-latex-base.
+  * Use (patched) upstream scripts directly.
+  * Add html documentation as replacement for pdf files.
+  * Update Brazilian Portuguese debconf translations. (Closes: #663495)
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Sun, 15 Apr 2012 12:16:49 +0200
+
+lilo (1:23.2-3) unstable; urgency=low
+
+  * Fix tense use in debconf templates (thanks to Ivan Masar).
+  * Fix pending l10n issues: debconf translations:
+    - Dutch (Jeroen Schot), nl.po.       (Closes: #654397)
+    - Spanish (Omar Campagne), es.po.    (Closes: #655848)
+    - Indonesian (Mahyuddin Susanto), new id.po. (Closes: #660307)
+    - Polish (Michał Kułach), new pl.po. (Closes: #660534)
+    - Basque (Iñaki L. Murgoitio), eu.po. (Closes: #660640)
+    - Vietnamese (Hung Tran), vi.po.     (Closes: #660643)
+    - Italian (Luca Monducci), it.po.    (Closes: #660915)
+    - Slovak (Ivan Masar), new sk.po.    (Closes: #661143)
+    - Czech (Miroslav Kure), cs.po.      (Closes: #661437)
+  * Fix of some errors in lilo manpage.  (Closes: #659809)
+  * Fix of some typos in user.tex file (string EBDA).
+  * Add infos about old documentation in README.Debian.
+  * Bump to Standards Version 3.9.3 (no changes).
+  * Bump to Copyright Format 1.0 (DEP-5).
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Sun, 04 Mar 2012 00:28:31 +0100
+
+lilo (1:23.2-2) unstable; urgency=low
+
+  * debian/control:
+    - Move to debhelper (>= 8).
+    - Update Vcs Git and Browser URLs.
+    - Remove old Uploader (not active anymore).
+  * Move to compatibility level 8.
+  * Update lilo.conf manpage using better explanations. 
+      (Closes: #283281, #368133, #629321)
+  * Update of Swedish translation (sv.po). (Closes: #628931)
+  * Update of mkrescue script.  (Closes: #627120)
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Sat, 18 Jun 2011 23:38:38 +0200
+
+lilo (1:23.2-1) unstable; urgency=medium
+
+  [ Joachim Wiedorn ]
+  * New upstream release:
+    - Fix for larger kernel setup code. (Closes: #625266)
+    - Update of manpages (mkrescue.8, lilo.conf.5).
+  * Update of some patches; remove of some patches (now in upstream).
+  * debconf scripts:
+    - Update of French translation (fr.po). (Closes: #621845)
+    - Update of Portuguese translation (pt.po). (Closes: #622642)
+    - Update of Russian translation (ru.po). (Closes: #623794)
+    - Update of Japanese translation (ja.po). (Closes: #624629)
+  * debian/control:
+    - Bump to Standards-Version 3.9.2 (without changes).
+    - Remove mbr dependency for package lilo (no more needed).
+    - Replace perl-modules dependency with variable ${perl:Depends}.
+
+  [ Niels Thykier ]
+  * Added DMUA flag.
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Sat, 07 May 2011 17:18:48 +0200
+
+lilo (1:23.1-2) unstable; urgency=medium
+
+  [ Joachim Wiedorn ]
+  * debian/control:
+    - Remove dependency to lilo in package lilo-doc. (Closes: #613753)
+  * Fix: save errno for second command (device.c).
+  * Fix: save file permissions for converted lilo.conf (Closes: #615103)
+      and fix some typos in script lilo-uuid-diskid.
+  * Fix: missleading error message in geometry.c. (Closes: #445264)
+  * Reformatting of mkrescue manpage (thanks to M.E. Schauer).
+      (Closes: #617282)
+  * debconf scripts:
+    - Fix typos in some debconf translation files. (Closes: #504733)
+    - Use better style in debconf translations. (Closes: #312451, #504733)
+    - Remove debconf code for managing old boot/boot.b and similar files.
+    - Remove no more needed debian/lilo.lintian-overrides file.
+    - Remove script liloconfig and all appropriate debconf code.
+    - Update of German translation (de.po).
+    - Update of French translation (fr.po). (Closes: #615936)
+    - Update of Russian translation (ru.po). (Closes: #616691)
+    - Update of Galician translation (gl.po).
+    - Update of Danish translation (da.po). (Closes: #618004)
+    - Update of Basque translation (eu.po). (Closes: #618253)
+    - Update of Czech translation (cs.po).  (Closes: #618711)
+    - Update of Spanish translation (es.po). (Closes: #618813)
+    - Update of Finnish translation (fi.po). (Closes: #618886)
+    - Update of Italian translation (it.po). (Closes: #618801)
+    - Update of Brazilian Portuguese translation. (Closes: #618738)
+    - Update of Swedish translation (sv.po). (Closes: #618620)
+  * Add new script liloconfig, using template with comments,
+      works with UUID, LABEL and disk-id for root and boot options.
+  * Add new manpage for liloconfig, update of other manpages.
+  * Fix typos and phrases in manpage of lilo.conf. (Closes: #258472)
+
+  [ Niels Thykier ]
+  * Added Depends on perl-modules, since liloconfig needs it.
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Sun, 20 Mar 2011 14:37:18 +0100
+
+lilo (1:23.1-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #339778)
+  * Upstream bugfixes:
+    - Option 'append' works with acpi=off. (Closes: #428390)
+    - Working on degraded RAID-1 device. (Closes: #278373, #522283)
+    - Working with MD v1.0 RAID-1 boot devices. (Closes: #598035)
+    - Working with spaces in labels. (Closes: #287257)
+    - Using new hook scripts for kernel and initrd only one time
+      when needed. (Closes: #599934)
+    - Include diffs for NMUs. (Closes: #504267, #409663)
+    - Fix error with LVM partition. (Closes: #244741)
+    - Compatible with devmapper version. (Closes: #325235)
+  * Solved upstream bugs of Ubuntu:
+    - Raid related error while upgrading (LP: #242879)
+    - Warn if initrd is too large (LP: #260059)
+    - Allow using LVM as root partition (LP: #274972)
+    - Stack overlaping on second stage (LP: #438177)
+    - Raid setup fatal errors (LP: #470502)
+    - Use hook scripts while updating kernel/initrd 
+      (LP: #43869, #345482, #628858, #636211, #691975)
+
+  * Remove all old patches.
+  * Remove very old lilo.conf examples.
+  * Remove obsolete file debian/NEWS.
+  * Bump to Standards Version 3.9.1.
+  * Move to debhelper compatibility level 7.
+  * Move to source format 3.0 (quilt).
+  * Update and new formatting of debian/copyright.
+  * debian/control:
+    - Move source dependency debhelper to version >= 7.0.15.
+    - Update some versions of source dependencies and remove quilt.
+    - Add VCS urls in Alioth.
+    - Add in package lilo-doc dependency to lilo.
+    - Optimize package descriptions.
+
+  * Update all debian/lilo.* and debian/lilo-doc.* files.
+  * Add new debian/lilo-doc.doc-base file.
+  * Remove lilo.sh wrapper script, used because of devfsd.
+  * Remove obsolete script lilo_find_mbr and its manpage.
+  * Remove configured link update-lilo to liloconfig.
+  * Remove some obsolete manpages.
+  * Move script liloconfig into directory debian/scripts.
+  * Add new script update-lilo and its manual page. (Closes: #335084)
+  * Add new script lilo-uuid-diskid for ID conversion and its manual page.
+
+  * Update scripts lilo.postinst, lilo.postrm, lilo.preinst. Using
+      dpkg-maintscript-helper for preserving old modified hook scripts.
+  * Add link creation for menu background sarge.bmp and sid.bmp
+      for compatibility in file debian/lilo.postinst.
+  * Remove hook scripts for kernel and initramfs and use upstream scripts.
+      (Closes: #590022, #306472, #389328)
+  * debian/patches:
+    - Add new patches for Debian.
+    - Add patches for simple rules using dh 7.
+  * debian/rules:
+    - Use simple rules with dh 7 capabilities.
+  * Move debian/Makefile.floppy into debian/floppy directory
+      and fix this Makefile. (Closes: #158955)
+  * Add debian/lilo.install file.
+  * Add lintian-overrides for package lilo.
+  * Update debian/README.Debian file.
+  * Remove obsolete file debian/NEWS.
+  * Remove obsolete debian/TODO file.
+  * Remove obsolete debian/lilo.changelogs file.
+  * Add patchset and changelog entries for use in Ubuntu. (Closes: #602824)
+
+  * debconf files:
+    - Remove message above old bitmap path. (Closes: #304065)
+    - Update of debian/lilo.templates and debian/lilo.config.
+    - Add some code to these files using lilo-uuid-diskid.
+    - Small update of german translation.
+    - Add updated Danish debconf translation. (Closes: #596258)
+
+  * Some more bugfixes:
+    - Add usage hints about -H option in src/lilo.c. (Closes: #459714)
+    - su-to-root command without path in debian/lilo.menu. (Closes: #431077)
+    - Diffs for NMUs already included. (Closes: #504267, #409663)
+    - Remove old obsolete workaround (see bugreport 146350#25).
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Fri, 28 Jan 2011 22:51:10 +0100
+
+lilo (1:22.8-10) unstable; urgency=low
+
+  * debian/control:
+    - Remove Conflicts to grub-legacy and grub-pc.  (Closes: #606952)
+  * debian/README.Debian:
+    - Add information about using more then one bootloader.
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Tue, 14 Dec 2010 18:02:55 +0100
+
+lilo (1:22.8-9ubuntu1) natty; urgency=low
+
+  * Merge from debian unstable (LP: #690090). Remaining changes:
+    - 03_boot-prompt.patch, 03_lilo-version.patch: Change Debian branding to
+      Ubuntu.
+
+ -- Bhavani Shankar <bhavi@ubuntu.com>  Tue, 14 Dec 2010 12:58:18 +0100
+
+lilo (1:22.8-9) unstable; urgency=low
+
+  * New maintainer.
+  * debian/patches:
+    - Remove patch 16_geometry.patch for inaccessible disks and add
+      information in README.Debian about using of 'inaccessible' option.
+      (Closes: #409285, #400642)
+    - Fix script checkit for newer gcc.
+    - Fix for use LVM volume as root device. (Closes: #398957)
+    - Fix for better computing vmlinux size, upgrade hints in README.Debian.
+      (fixing sporadic failures).
+  * Fix hook scripts: check for /sbin/lilo.
+  * Add lacking file disk.com for creating test floppy.
+  * Add universal menu image for debian, remove menu image for sarge.
+      Update of template, postinst and postrm. (Closes: #420587, #427507)
+  * Set source format 1.0. Add README.source file.
+  * Update watch file to new alioth project area.
+  * debian/control:
+    - Remove VCS urls and add new Homepage url.
+    - Remove IA64 architecture (this is already status quo).
+    - Remove double lines of Priority and Section.
+    - Add package conflicts to grub-pc and grub-legacy.
+    - Remove conflicts to manpages.
+    - Bump to Standards-Version 3.9.1 (without changes).
+
+ -- Joachim Wiedorn <ad_debian@joonet.de>  Fri, 10 Dec 2010 22:21:25 +0100
+
+lilo (1:22.8-8.3ubuntu1) natty; urgency=low
+
+  * Merge from debian unstable (LP: #669363). Remaining change:
+    - 03_boot-prompt.patch, 03_lilo-version.patch: Change Debian branding to
+      Ubuntu.
+
+ -- Bhavani Shankar <bhavi@ubuntu.com>  Mon, 01 Nov 2010 14:15:56 +0530
+
+lilo (1:22.8-8.3) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Change kernel and initramfs hook scripts to do nothing if lilo.conf
+    does not exist (Closes: #594479)
+
+ -- Ben Hutchings <ben@decadent.org.uk>  Sat, 28 Aug 2010 03:10:47 +0100
+
+lilo (1:22.8-8.2) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Add kernel and initramfs hook scripts to ensure lilo is reinstalled
+    whenever the kernel or initramfs is updated. (Closes: #590022)
+
+ -- Ben Hutchings <ben@decadent.org.uk>  Tue, 24 Aug 2010 04:25:24 +0100
+
+lilo (1:22.8-8.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Czech (Miroslav Kure).  Closes: #505912
+    - Vietnamese (Clytie Siddall).  Closes: #513343
+    - Spanish (Francisco Javier Cuadrado).  Closes: #523466
+    - Italian (Luca Monducci).  Closes: #544597
+    - Basque (Iñaki Larrañaga Murgoitio).  Closes: #545514
+    - Finnish (Esko Arajärvi).  Closes: #545511
+    - Dutch (Vincent Zweije).  Closes: #546509
+
+ -- Christian Perrier <bubulle@debian.org>  Mon, 14 Sep 2009 19:54:16 +0200
+
+lilo (1:22.8-8ubuntu1) karmic; urgency=low
+
+  * Merge from debian unstable, remaining changes: LP: #409321
+    - debian/control: Build for lpia, too.
+    - 03_boot-prompt.patch, 03_lilo-version.patch: Change Debian branding to
+      Ubuntu.
+
+ -- Bhavani Shankar <right2bhavi@gmail.com>  Wed, 05 Aug 2009 18:43:40 +0530
+
+lilo (1:22.8-8) unstable; urgency=low
+
+  * Fix some more bashisms. (Closes: #535399)
+  * debian/lilo.postinst: Add -H flag to only install to active MD arrays.
+    (Closes: #507366)
+
+ -- William Pitcock <nenolod@dereferenced.org>  Sat, 01 Aug 2009 15:54:10 -0500
+
+lilo (1:22.8-7ubuntu1) jaunty; urgency=low
+
+  * Merge from debian unstable, remaining changes: (LP: #304346)
+    - debian/control: Build for lpia, too.
+    - 03_boot-prompt.patch, 03_lilo-version.patch: Change Debian branding to
+      Ubuntu.
+
+ -- Bhavani Shankar <right2bhavi@gmail.com>  Tue, 02 Dec 2008 16:26:42 +0530
+
+lilo (1:22.8-7) unstable; urgency=low
+
+  [ William Pitcock ]
+  * Acknowledge NMU. (Closes: #504295)
+  * Fix some remaining XSIisms in scripts. (Closes: #256736)
+
+  [ Christian Perrier ]
+  * Translation updates:
+    - French. (Closes: #504465)
+    - Swedish. (Closes: #504517)
+    - Japanese. (Closes: #504560)
+    - Arabic. (Closes: #504685)
+    - German. (Closes: #504732)
+    - Portuguese. (Closes: #505159)
+    - Russian. (Closes: #505581)
+
+ -- William Pitcock <nenolod@dereferenced.org>  Sat, 15 Nov 2008 11:01:59 -0600
+
+lilo (1:22.8-6.4ubuntu1) jaunty; urgency=low
+
+  * Merge with Debian unstable. Remaining Ubuntu changes:
+    - debian/control: Build for lpia, too.
+    - 03_boot-prompt.patch, 03_lilo-version.patch: Change Debian branding to
+      Ubuntu.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 04 Nov 2008 12:08:07 +0100
+
+lilo (1:22.8-6.4) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Don't add large-memory when no lilo.conf exists (Closes: #504376)
+
+ -- Paul Wise <pabs@debian.org>  Mon, 03 Nov 2008 18:09:53 +0900
+
+lilo (1:22.8-6.3) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Brown-paper bag upload to fix initrd filename checks.
+
+ -- Paul Wise <pabs@debian.org>  Mon, 03 Nov 2008 00:25:04 +0900
+
+lilo (1:22.8-6.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Also handle the case where the kernel/initrd symlinks are not in /
+
+ -- Paul Wise <pabs@debian.org>  Sun, 02 Nov 2008 23:50:29 +0900
+
+lilo (1:22.8-6.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Add some information about large initrd boot problems:
+    - Document the issue and workarounds in README.Debian
+    - Alert users to the issue in NEWS.Debian
+    - Prompt users to add large-memory to /etc/lilo.conf
+    - Thanks to debian-l10n-english for the review!
+    (Closes: #479607)
+  * Include French debconf translation update by Christian Perrier
+
+ -- Paul Wise <pabs@debian.org>  Sat, 25 Oct 2008 21:25:18 +0800
+
+lilo (1:22.8-6) unstable; urgency=low
+
+  * debian/liloconfig: Use large-memory mode. (Closes: #479607).
+  * debian/control: Update e-mail address, Standards-Version.
+
+ -- William Pitcock <nenolod@dereferenced.org>  Sat, 26 Jul 2008 15:47:25 -0500
+
+lilo (1:22.8-5) unstable; urgency=low
+
+  [ William Pitcock ]
+  * Change patch system to quilt.
+  * debian/control:
+    - Add Vcs-Svn: and Vcs-Browser: fields.
+    - Change build dependency tetex-bin to texlive-latex-base.
+  * po/:
+    - Add Finnish debconf translation. (Closes: #469502)
+    - Update Japanese translation. (Closes: #463689)
+    - Update Brazilian Portugese translation. (Closes: #421531)
+    - Update Vietnamese translation. (Closes: #312450, #486227)
+    - Add Basque translation. (Closes: #487144)
+  * debian/liloconfig: Warn about large initrd images, as not
+    all systems can successfully boot when the 8MB barrier is reached,
+    it depends a lot on system BIOS and chipset configuration.
+    (Closes: #479607)
+
+  [ Christian Perrier ]
+  * [Lintian] Change menu section to Applications and subsection to
+    Administration
+  * [Lintian] Change call to su-to-root to /usr/bin/su-to-root in menu
+    file
+
+ -- William Pitcock <nenolod@sacredspiral.co.uk>  Mon, 16 Jun 2008 03:01:15 -0500
+
+lilo (1:22.8-4) unstable; urgency=low
+
+  * Take over package. (Closes: #470683)
+  * Update to Standards-Version 3.7.3.
+
+ -- William Pitcock <nenolod@sacredspiral.co.uk>  Fri, 14 Mar 2008 13:13:12 -0500
+
+lilo (1:22.8-3.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * cdebconf transition: allow the dependency on debconf to be satisfied with
+    an alternate of debconf-2.0 (Closes: #332007).
+
+ -- Amaya Rodrigo Sastre <amaya@debian.org>  Mon, 20 Aug 2007 19:45:27 +0200
+
+lilo (1:22.8-3) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 20 Mar 2007 20:20:23 +0000
+
+lilo (1:22.8-2) testing-proposed-updates; urgency=medium
+
+  * Acknowledging NMU. Thanks Christian.
+    (Closes: #411560, #409478, #410241, #412190)
+  * debian/patches/17_dont_scan_udev.dpatch:
+    - Added again and updated to avoid checking '/dev/fd'.
+      (Closes: #409994)
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 15 Mar 2007 13:47:26 +0000
+
+lilo (1:22.8-1.1) unstable; urgency=low
+
+  * Non-maintainer upload to fix pending l10n issues.
+  * Debconf translations:
+    - Dutch. Closes: #411560
+    - Danish. Closes: #409478
+    - Spanish. Closes: #410241
+    - Galician. Closes: #412190
+    - All PO files converted to UTF-8 (Japanese was UTF-8 already)
+  * Fix typos in man pages. Closes: #331045, #331046, #331047, #286596
+
+ -- Christian Perrier <bubulle@debian.org>  Fri,  2 Mar 2007 07:31:31 +0100
+
+lilo (1:22.8-1) unstable; urgency=low
+
+  * New upstream release.
+  * Acknowledging NMUs, big thanks guys.
+    Closes: #396487, #399057, #400150, #404409, #406543, #408576
+    Closes: #407847, #407697, #401393, #403222
+  * debian/patches/{02_makefile-adds.dpatch,07_devfs_msg.dpatch}:
+    - Updated to fit new version.
+  * debian/patches/17_dont_scan_udev.dpatch:
+    - Not longer applied as upstream already managed this problem.
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 22 Feb 2007 22:52:37 +0000
+ 
+lilo (1:22.7.3-1.4) unstable; urgency=low
+
+  * Non-maintainer upload with approval of maintainer for RC bug fix.
+  * New patch, 02_devmapper-use-major-minor, to address device-mapper devices
+    via major/minor instead of name for DM_DEVICE_TABLE;
+    closes: #401393, #403222.
+
+ -- Loic Minier <lool@dooz.org>  Sat,  3 Feb 2007 09:49:47 +0100
+
+lilo (1:22.7.3-1.3) unstable; urgency=low
+
+  * Non-maintainer upload to fix a few more l10n issues.
+  * Debconf translations:
+    - German updated. Closes: #407697
+    - Swedish updated. Closes: #407847
+    - Czech updated. Closes: #408576
+    - Portuguese added (send directly by the translation team). Removed the
+      "wrong" pt_PT.po file
+
+ -- Christian Perrier <bubulle@debian.org>  Sun, 28 Jan 2007 14:23:17 +0100
+
+lilo (1:22.7.3-1.2) unstable; urgency=low
+
+  * Non maintainer upload to fix a forgotten l10n issue
+  * Launch debconf-updatepo in the clean rule
+  * Debconf templates translations:
+    - French updated.
+
+ -- Christian Perrier <bubulle@debian.org>  Fri, 19 Jan 2007 22:25:44 +0100
+
+lilo (1:22.7.3-1.1) unstable; urgency=low
+
+  * Non maintainer upload to fix longstanding l10n issues
+  * Debconf templates translations:
+    - French updated. Closes: #396487
+    - Danish uupdated. Closes: #399057
+    - Japanese updated. Closes: #400150
+    - Russian updated. Closes: #404409
+    - German updated. Closes: #406543
+
+ -- Christian Perrier <bubulle@debian.org>  Wed, 17 Jan 2007 22:29:06 +0100
+
+lilo (1:22.7.3-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #384551)
+  * debian/patches/01_devmapper.dpatch:
+    - Removed as it is already on upstream source.
+  * debian/patches/*.dpatch:
+    - Updated to fit new version.
+  * debian/README.Debian:
+    - Add suggestion to run /sbin/lilo after upgrading or dist-upgrading.
+      (Closes: 337779)
+  * debian/rules:
+    - Now make is done with make all; make docs
+  * debian/patches/18_mkrescue_default_size.dpatch:
+    - Now default size when making an ISO image is 16MB. (Closes: #303009)
+  * debian/patches/01_buggy_bios_workaround.dpatch:
+    - Avoid a division by zero on buggy BIOS that return 0 sectors when
+      setting LBA. (Closes: #304776)
+
+ -- Andrés Roldán <aroldan@debian.org>  Mon, 18 Dec 2006 13:27:23 +0000
+
+lilo (1:22.6.1-9) unstable; urgency=high
+
+  * Upload thanks to Julian Hernandez <julianhernandez@gmail.com>
+  * Urgency set to high because liloconfig (and hence update-lilo) failed when
+    selecting the desired bitmap and the file /etc/lilo.conf was generated
+    incorrectly.
+  * debian/liloconfig:
+    - Now the bitmap list can be selected using debconf and now liloconfig will work.
+    - Now liloconfig saves a backup file of the configuration before writing a
+      new one.
+  * debian/control:
+    - Change section of lilo package from base to admin
+    - mbr package is now a dependency to make liloconfig run smoothly.
+  * debian/watch:
+    - Updated to use the new upstream URL. (Closes: #354360)
+
+ -- Andrés Roldán <aroldan@debian.org>  Fri, 17 Nov 2006 15:31:05 +0000
+
+lilo (1:22.6.1-8) unstable; urgency=high
+
+  * debian/patches/06_geometry.dpatch:
+    - Patch from Nathanael Nerode <neroden@fastmail.fm> to make sure that
+      disks marked 'inaccessible' do not have their partition tables checked
+      and do not have 'stat' run. (Closes: #379518)
+  * debian/patches/06_verbose-errmsg.dpatch:
+    - Applied changes suggested by Javier Fernández-Sanguino Pen~a
+      <jfs@computer.org> because some parts of the patch were never
+      executed. (Closes: #295465)
+  * debian/{liloconfig,lilo.templates}:
+    - Applied changes suggested by Artur R. Czechowski <arturcz@hell.pl>
+      to use debconf in liloconfig. (Closes: #351542)
+  * debian/patches/17_dont_scan_udev.dpatch:
+    - Patch from Noel Maddy <noel@zhtwn.com> to avoid checking the /dev/.udev
+      directory when scanning /dev. (Closes: #378923)
+  * debian/po/{sv,ru,nl,pt_PT}.po:
+    - Added and updated translations. Thanks guys. 
+      (Closes: #333278, #338070, #340632, #356214)
+     
+ -- Andrés Roldán <aroldan@debian.org>  Wed, 25 Oct 2006 15:08:22 +0000
+
+lilo (1:22.6.1-7.1) unstable; urgency=medium
+
+  * Non-Maintainer Upload to fix a policy violation due to the use of mknod
+    instead of MAKEDEV.  Thanks to Martin Ferrari for the patch.
+    (Closes: #374477)
+
+ -- Margarita Manterola <marga@debian.org>  Mon, 31 Jul 2006 17:12:34 -0300
+
+lilo (1:22.6.1-7) unstable; urgency=low
+
+  * Maintenance upload.
+  * Acknowledging NMUs. Thanks guys. (Closes: #304260)
+  * debian/lilo.{config,postinst}:
+    - Better check if a upgrade from old versions is detected. Fixes #316955
+      and #306472 at least on testing.
+  * debian/po/
+     -{nl,uk,pt_BR}.po: Updated. (Closes: #286208, #298341, #270319)
+    - ar.po : Added arabic translation. Thanks to Mohammed Adnene Trojette
+      <adn+deb@diwi.org>. (Closes: #320769)
+    - vi.po: Added vietnamese translation. Thanks to Clytie Siddall
+      <clytie@riverland.net.au>. (Closes: #312450)
+  * debian/patches/01_mkrescue-fixes.dpatch:
+    - Updated to fix some security problems detected on mkrescue . Thanks
+      to Javier Fernández-Sanguino Peña <jfs@computer.org>
+      (Closes: #292073, #310653)
+  * debian/liloconfig:
+    - Adds a section displaying an example of how to use the 'disk' parameter
+      and gives some examples with USB external devices.
+  * debian/patches/01_devmapper.dpatch:
+    - Updated. Hopefully closes: #309083
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 29 Sep 2005 18:44:42 +0000
+
+lilo (1:22.6.1-6.2) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * High-urgency upload for sarge-targetted RC bugfix.
+  * Add "set -e" on lilo.postinst so the script actually fails when
+    an error occurs (closes: #304260).
+
+ -- Jordi Mallach <jordi@debian.org>  Wed, 25 May 2005 14:08:54 +0200
+
+lilo (1:22.6.1-6.1) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * High-urgency upload for sarge-targetted RC bugfix
+  * Don't ignore errors from running lilo on upgrade when it's required,
+    as this silently leaves the system in an unbootable state.
+    Closes: #304260.
+
+ -- Steve Langasek <vorlon@debian.org>  Sat, 14 May 2005 04:48:05 -0700
+
+lilo (1:22.6.1-6) unstable; urgency=low
+
+  * debian/patches/15_space-bug.dpatch:
+    - Little, temporal, dirty and ugly hack that overwrites spaces by
+      underscores on labels and aliases. (Closes: #285055)
+  * debian/liloconfig:
+    - Won't add images as "Linux 0" but as "Lin img0".
+
+ -- Andrés Roldán <aroldan@debian.org>  Sat, 12 Mar 2005 22:13:34 +0000
+
+lilo (1:22.6.1-5) unstable; urgency=low
+
+  * Built with newer libdevmapper (Closes: #296378) 
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 22 Feb 2005 23:18:56 +0000
+
+lilo (1:22.6.1-4) unstable; urgency=high
+
+  * debian/patches/13_bad-partition-warn.dpatch:
+    - Rewrote. Now it adds LVM partitions as a secure partition type to install
+      LILO in, while leaving the warning for really dangerous partition types.
+      It also removes the prompt when the user wants to install LILO on a 
+      Windows(R) partition.
+  * debian/lilo.config:
+    - Never set to 'false' lilo/runme template. (Closes: #284929) 
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu,  9 Dec 2004 20:22:14 +0000
+
+lilo (1:22.6.1-3) unstable; urgency=low
+
+  * debian/control:
+    - Changed architecture of lilo-doc from i386 to all. (Closes: #277919)
+  * debian/po/da.po:
+    - Updated, thanks to Claus Hindsgaul <claus_h@image.dk>. (Closes: #284175)
+  * debian/patches/13_bad-partition-warn.dpatch:
+    - New. This patch makes LILO to not ask whether to install the boot loader
+      onto a LVM partition. (Closes: #283351, #283346)
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue,  7 Dec 2004 14:05:06 +0000
+
+lilo (1:22.6.1-2) unstable; urgency=high
+
+  * debian/patches/12_kill-diagnostic.dpatch:
+    - This patch makes LILO not Build-Depends on elks-libc or dosfstools. 
+      (Closes: #282564)
+
+ -- Andrés Roldán <aroldan@debian.org>  Wed,  1 Dec 2004 14:00:31 +0000
+
+lilo (1:22.6.1-1) unstable; urgency=low
+
+  * New upstream version.
+  * debian/control:
+    - Added amd64 and ia64 to the Architecture list. (Closes: #277919)
+  * debian/lilo.{config,templates}:
+    - Updated to show the user a most clear way to cleanly upgrade the package
+      from and old (woody) version. (Closes: #270872)
+  * debian/lilo.preinst:
+    - Won't remove files not owned by this package but warns about it.
+      (Closes: #275042)
+  * debian/patches/11_geom-speedup.dpatch:
+    - Patch from Jim Paris <jim@jtan.com> to speed up geometry detection.
+      (Closes: #278998)
+  * debian/lilo.postrm:
+    - Will erase /usr/share/lilo on purge.
+  * debian/patches/01_lilo.conf.5.dpatch:
+    - Fixes typo. (Closes: #258471)
+  * debian/patches/{01_mkrescue-fixes.dpatch,02_makefile-adds.dpatch,07_mkrescue_plus_spaces.dpatch}:
+    - Updated to fit new upstream version.
+  * debian/control:
+    - Build-Depends on dosfstools.
+  * debian/po/{es,fr,uk,cs}.po:
+    - Updated. (Closes: #281899, #281482, #281355)
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 18 Nov 2004 18:56:11 +0000
+
+lilo (1:22.6-1) unstable; urgency=high
+
+  * New upstream version.
+  * debian/control:
+    - Removed build dependency on nasm.
+    - Build-Depends on dpatch (>= 2.0.0) instead of (>= 1.11)
+  * debian/patches:
+    - Removed the following patches. Some of them were sent to upstream and
+      were incorporated into the main LILO source (see upstream's changelog):
+      01_keytab-lilo-regex.dpatch, 02_lilo-2.6.dpatch, 05_lilo.8-2.dpatch,
+      12_paranoia.dpatch, 11_addappend.dpatch, 12_ndevs-check.dpatch,
+      03_non-root-warn.dpatch, 10_fix_check_options.dpatch.
+  * debian/lilo.config:
+    - Add check for invalid or deprecated path values for bitmap field on
+      /etc/lilo.conf (closes: #267538)
+  * Severity set to high due to the resolution of the grave bug.
+  * debian/patches/03_boot-prompt.dpatch:
+    - Updated menu screen's title.
+  * debian/patches/03_readlink-overflow.dpatch:
+    - Merged into 01_devmapper.dpatch.
+  * debian/liloconfig:
+    - Will add memtest86 and memtest86+ images if found.
+  * debian/po:
+    - Updated es.po.
+    - Updated fr.po. (closes: #265812)
+    - Updated da.po.
+    - Updated pt_BR.po.
+  * debian/patches/10_install-references.dpatch:
+    - Changes confusing references to install= parameters. (closes: #270870)
+
+ -- Andrés Roldán <aroldan@debian.org>  Mon, 13 Sep 2004 19:12:13 +0000
+
+lilo (1:22.5.9-6) unstable; urgency=medium
+
+  * debian/contrib/coffee-menu:
+    debian/contrib/coffeebmp.conf:
+    - New bitmap. Thanks to Federico Stella <fderfel@gmail.com>.
+  * debian/liloconfig:
+    - Added get_bitmap function that let the user to choose the bootsplash
+      bitmap. (closes: #259982)
+  * debian/patches/04_lilo.conf.5.dpatch.diff:
+    - Removed as fallback= option is already documented in upstream's manpage.
+      (closes: #261198)
+  * debian/patches/12_paranoia.dpatch:
+    - Patch provided by (paranoic) upstream.
+  * debian/po/de.po:
+    debian/po/da.po:
+    debian/po/pt_BR.po:
+    debian/po/cz.po:
+    - Updated. Thanks guys. (closes: #260397, #260866, #261238, #264214)
+  * Urgency set to medium to reach sarge soon.
+
+ -- Andrés Roldán <aroldan@debian.org>  Sat, 14 Aug 2004 21:53:21 +0000
+
+lilo (1:22.5.9-5) unstable; urgency=medium
+
+  * debian/patches/12_ndevs-check.dpatch: Fixed. The check must be between the
+    counter (i) and MAX_BIOS_DEVICES. 
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 13 Jul 2004 15:13:23 +0000
+
+lilo (1:22.5.9-4) unstable; urgency=low
+
+  * debian/patches/01_devmapper.dpatch: Upgraded to upstream's version. Former
+    patch was a backport from 22.5.8 version.
+  * debian/patches/03_readlink-overflow.dpatch: Fixes readlink overflow when
+    more then one dm device exists. Thanks to Dan Merillat
+    <dmerillat@sequiam.com>. (closes: #244374)
+  * debian/patches/04_supwarn.dpatch: New. Suppresses warnings when not using
+    devmapper. (closes #247190)
+  * debian/patches/12_ndevs-check.dpatch: New. Added check to avoid buffer
+    overrun when ndevs is >= MAX_BIOS_DEVICES
+  * debian/liloconfig: Now it will remove leading whitespaces or tabs.
+    (closes: #256351)
+  * debian/lilo.postinst: Add extra check to see whether we need to mount /boot
+    or not. (closes: #254366)
+  * debian/lilo.preinst: New. Removes old directory. 
+    (closes: #256587, #257194)
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 13 Jul 2004 02:24:28 +0000
+
+lilo (1:22.5.9-3) unstable; urgency=low
+
+  * debian/lilo.templates: Changed debconf message. (closes: #252176)
+  * debian/lilo.postrm: Now purguing LILO will remove
+    /usr/share/lilo/contrib. (closes: #245616)
+  * Now all the bitmaps will be located on /boot. (closes: #250621)
+  * debian/control: Build-Depends on elks-libc. (closes: #249699)
+  * debian/rules: Added .conf files to /usr/share/lilo that explains how
+    to setup all the bitmaps provided. (closes: #246758)
+  * debian/lilo.links: /usr/sbin/liloconfig is now also called
+    /usr/sbin/update-lilo. (closes: #250972)
+  * debian/patches/11_addappend.dpatch: New. Add new per-image option,
+    addappend=. See lilo.conf(5). Thanks to Darren Salt. (closes: #249736)
+  * debian/lilo.doc: Now README.raid1 and README.bitmaps belong to lilo
+    package instead of lilo-doc.
+  * debian/README.Debian: New. 
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 10 Jun 2004 23:47:48 -0500
+
+lilo (1:22.5.9-2) unstable; urgency=low
+
+  * debian/patches/10_fix_check_options.dpatch: New. Fixes problem when
+    parsing options. Thanks to Julien Plissonneau Duquene. (closes: #244439)
+  * debian/po/de.po: Updated. Thanks to Florian Ernst. (closes: #244527)
+  * debian/patches/00list: Activated again 09_notinteractive.dpatch. 
+
+ -- Andrés Roldán <aroldan@debian.org>  Sun, 18 Apr 2004 21:59:27 +0000
+
+lilo (1:22.5.9-1) unstable; urgency=low
+
+  * New upstream version.
+  * Updated (again) regex to determine the kernel version. (closes: #243529)
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 13 Apr 2004 22:11:34 +0000
+
+lilo (1:22.5.8-15) unstable; urgency=low
+
+  * debian/po/el.po: Updated. (closes: #240447)
+  * debian/po/tr.po: New. Added debconf turkish translation. (closes: #239145)
+  * debian/lilo.postinst: Updated. Upgraded regex to determine the kernel
+    version. (closes: #240333)
+  * debian/patches/09_notinteractive.dpatch: New. Patch to avoid interactive
+    mode when using -t flag. (closes: #236486) 
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 30 Mar 2004 00:02:06 +0000
+
+lilo (1:22.5.8-14) unstable; urgency=low
+
+  * debian/lilo.postinst: Check for existance of a block device instead 
+    a of character device.
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 11 Mar 2004 20:01:07 +0000
+
+lilo (1:22.5.8-13) unstable; urgency=low
+
+  * debian/control: Priority set to "optional". Changed because may cause
+    problems on the new debian-installer. (closes: #236071)
+  * debian/lilo.postinst: Big changes. First, it detects if the system has a
+    kernel 2.6.3 or higher and if network block device is being used and
+    creates the appropiate devices. (closes: #235805).
+    Second, it detects if the file /usr/share/lilo/contrib/debian.bmp exists 
+    and is symbolic link and won't override it if so. (closes: #234045)
+  * debian/lilo.links: Removed.
+
+ -- Andrés Roldán <aroldan@debian.org>  Thu, 11 Mar 2004 00:32:34 +0000
+
+lilo (1:22.5.8-12) unstable; urgency=low
+
+  * Added danish debconf translation. Thanks to Claus Hindsgaul. (closes: #232860)
+  * Added ukrainian debconf translation. Thanks to Eugeniy Meshcheryakov.
+    (closes: #234065)
+  * Added patch that updates an old keytab-lilo's regex. Thanks to Bernd
+    Feige. (closes: #233492)
+
+ -- Andrés Roldán <aroldan@debian.org>  Tue, 24 Feb 2004 18:44:54 +0000
+
+lilo (1:22.5.8-11) unstable; urgency=high
+
+  * Added greek debconf translation. (closes: #231002)
+  * Added Czech debconf translation. (closes: #231122)
+  * Updated liloconfig because of some unitialized variables bugs on gathering
+    and adding the images to the configuration file.
+  * Updated copyright file. Upstream URL has changed.
+  * Updated lilo.config. It was not running /sbin/lilo even when the user
+    wanted to run it. This may make some systems upgrading from woody to sarge
+    unbootable, that's why I set priority to high.
+
+ -- Andrés Roldán <aroldan@debian.org>  Fri, 13 Feb 2004 16:47:15 +0000
+
+lilo (1:22.5.8-10) unstable; urgency=low
+
+  * Added patch to make lilo understand device-mapper block devices (LVM2 and
+    EVMS). Thanks to Christophe Boyanique. (closes: #229932)
+  * Build-Depends on libdevmapper1.00-dev.
+  * Added simplifed chinese translation. Thanks to Carlos Z.F. Liu.
+    (closes: #230371)
+  * Make LILO compile with -DAUTOAUTO. (closes: #230632) 
+
+ -- Andrés Roldán <aroldan@debian.org>  Sun,  1 Feb 2004 20:06:59 +0000
+
+lilo (1:22.5.8-9) unstable; urgency=low
+
+  * Added patch to support spaces on the configuration file when you use
+    mkrescue.
+  * Fixed typo on lilo.8 manpage. (closes: #225278)
+
+ -- Andrés Roldán <aroldan@debian.org>  Mon, 26 Jan 2004 19:36:29 +0000
+
+lilo (1:22.5.8-8) unstable; urgency=low
+
+  * Added again symbolic links on /boot. Since liloconfig now points to
+    /usr/share/lilo/contrib/debian.bmp, this will eventually be deleted.
+
+ -- Andrés Roldán <aroldan@debian.org>  Sun, 21 Dec 2003 02:23:39 +0000
+
+lilo (1:22.5.8-7) unstable; urgency=low
+
+  * Updated liloconfig. 
+    - Now it detects if there is a initrd.img file and if so, it adds it to 
+      the generated lilo.conf file.
+    - Pointed bitmap= field to /usr/share/lilo/contrib/debian.bmp which is a
+      symbolic link to the distribution used.
+    - Closes: 224368
+  * Added upstream changelog again. It was moved by mistake. (closes: #223413)
+  * Added german translation. (closes: #223124)
+
+ -- Andrés Roldán <aroldan@debian.org>  Sat, 20 Dec 2003 20:38:29 +0000
+
+lilo (1:22.5.8-6) unstable; urgency=low
+
+  * Now LILO can disable FDC on (weird?) BIOS using 2.6 kernel.
+    (closes: #221967)
+  * Updated debian/patches files to use the XX_name.dpatch scheme.
+  * Added version=2 to debian/watch file.
+  * Build-Depends on versioned bin86 package (>= 0.16).
+  * Added suggestion to use the "inaccessible" tag on the error message that
+    caused a lot of questions from the users. (closes: #222098)
+  * Changed Debian version message.
+  * Added check for commented lines on /etc/fstab in order to ignore warnings.
+    (closes: #222527)
+  * Changed error message when one RAID1 mirror is down. I will talk with
+    upstream to see if we can get the desired behaviour. (closes: #222528)
+  * Added patch that allow to have spaces on "label=" config line. You have
+    to enclose the name between quotes though. Updated liloconfig to add
+    labels with quotes. (closes: #155642)
+  * Changed the warning message when DEVFS_FS is compiled into the kernel and
+    the devfs=mount parameter was omitted. If the user really needs DEVFS_FS,
+    she will know that she has to put devfs=mount unless CONFIG_DEVFS_MOUNT is
+    set as well. (closes: #223015)
+
+ -- Andrés Roldán <aroldan@debian.org>  Sat,  6 Dec 2003 01:29:15 +0000
+
+lilo (1:22.5.8-5) unstable; urgency=low
+
+  * Updated debian/lilo.postinst script.
+  * Updated debian/watch.
+  * Moved lilo_find_mbr manpage to section 8.
+  * Added LILO needed kernel headers from kernel-headers-2.4.22-1 package and
+    added patch to make LILO compile against those headers. This is for
+    compatibility reasons and may be removed when upstream releases a full
+    LILO version that does not need this hack. (closes: #218607)
+
+ -- Andrés Roldán <aroldan@debian.org>  Mon,  3 Nov 2003 22:13:57 +0000
+
+lilo (1:22.5.8-4) unstable; urgency=low
+
+  * Updated liloconfig. Now it detects all the images installed on the system
+    and adds them to lilo.conf. This can be used as a "update-lilo" script.
+    Thanks to David Hardeman. (closes: #148867)
+  * copyright file is now UTF-8 encoded.
+
+ -- Andrés Roldán <aroldan@debian.org>  Sun, 26 Oct 2003 03:15:03 +0000
+
+lilo (1:22.5.8-3) unstable; urgency=low
+
+  * Updated pt_BR file.
+  * Added check for /boot if it is on a separate partition. (closes: #216250)
+
+ -- Andrés Roldán <aroldan@debian.org>  Sat, 18 Oct 2003 21:03:11 +0000
+
+lilo (1:22.5.8-2) unstable; urgency=medium
+
+  * The same as before but with urgency "medium".
+
+ -- Andrés Roldán <aroldan@debian.org>  Sat, 11 Oct 2003 15:57:16 +0000
+
+lilo (1:22.5.8-1) unstable; urgency=low
+
+  * New upstream release. Hopefully closes: #212794, #214247
+  * Updated nl.po file.
+
+ -- Andrés Roldán <aroldan@debian.org>  Fri, 10 Oct 2003 19:37:42 -0500
+
+lilo (1:22.5.7.2-5) unstable; urgency=medium
+
+  * Fixed bug that may double-mount /dev on a chrooted dir. Applied patch to 
+    debian/lilo.sh sent by Hans Ginzel <hans@matfyz.cz>. (closes: #214653)
+  * Stop build-depending on gcc-3.2. The bug that caused this dependency has
+    been closed on gcc-3.3.
+  * Updated postinst process. Now it detects whether it's necessary to run
+    /sbin/lilo and will ask the user to do that. This typically happens when
+    upgrading from woody to sarge. I hope this won't be necessary again. Set
+    the priority to "medium" because it mostly affects users upgrading from
+    woody to sarge. (closes: #214734)
+  * Updated templates.
+  * Updated (some) translated templates.
+
+ -- Andrés Roldán <aroldan@debian.org>  Fri, 10 Oct 2003 00:48:05 +0000
+
+lilo (1:22.5.7.2-4) unstable; urgency=low
+
+  * Changed maintainer's e-mail.
+  * Added set +e and set -e for linking process on lilo.postinst.
+  * Updated liloconfig to make clearer the install= comments.
+    (closes: #183471).
+  * Updated ja.po translation. (closes: #213867)
+  * Changed misleading message when using -T option as not root. 
+    (closes: #204354)
+
+ -- Andrés Roldán <aroldan@debian.org>  Sun,  5 Oct 2003 18:55:18 +0000
+
+lilo (1:22.5.7.2-3) unstable; urgency=medium (See changes)
+
+  * Updated lilo.templates. Now it warns the user to run /sbin/lilo if it's an
+    upgrade from older versions of LILO. This may lead to a crash in the
+    booting process (for instance, when upgrading from woody to sarge).
+    (closes: #211978)
+  * Smart handling of bitmap links on /boot. Removed lilo.links for this 
+    purpose and now the linking is made in the postinst process.
+    (closes: #212152)
+		      
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Wed, 24 Sep 2003 23:34:31 +0000
+
+lilo (1:22.5.7.2-2) unstable; urgency=low
+
+  * Changed "image" for "label" on lilo.conf(5). (closes: #209132)
+  * Build-depend on gcc-3.2 because the gcc-3.3 preprocessor is buggy and
+    won't parse well the *.S files.
+  * Updated default LILO menu.
+  * Bumped Standards-Version to 3.6.1.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sat, 20 Sep 2003 18:21:45 +0000
+
+lilo (1:22.5.7.2-1) unstable; urgency=low
+
+  * New upstream version. 
+ 
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Thu, 21 Aug 2003 17:17:09 +0000
+
+lilo (1:22.5.7.1-1) unstable; urgency=low
+
+  * Minimal upstream patch applied that fix a self-consistency check bug
+    when using devfs (changed upstream version to 22.5.7.1).
+    (closes: #205737)
+  * Changed charset encoding to UTF-8 on es.po file. 
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sun, 17 Aug 2003 14:56:55 +0000
+
+lilo (1:22.5.7-1) unstable; urgency=low
+
+  * New upstream version.
+  * Now control and changelog files are UTF-8 encoded. (closes: #202146)
+  * Make versioned dpatch Build-Depends.
+  * Updated debian/patches files.
+  * Now bitmap= field on liloconfig will point to /boot instead of that nasty
+    /usr/share/lilo/contrib :) (Added symlinks of course).
+  * Removed patch from device.c. This is already included on the upstream
+    source.
+  * Built with newer libc6.
+  * Added dutch translation sent by Cobaco. (closes: #204925)
+  * Added my own spanish translation.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Mon, 12 Aug 2003 08:00:21 +0000
+
+lilo (1:22.5.6.1-1) unstable; urgency=low
+
+  * Minimal upstream patch applied (changed upstream version to 22.5.6.1).
+  * Changed Debian string version.
+  * Added lilo_find_mbr.1 manpage. (closes: #201484)
+  * Cleaning and make up of debian/ directory.
+  * Bumped standard versions to 3.6.0.
+  * Applied patch that fix segfault when running lilo on a disk without
+    partitions. (closes: #201601)
+  
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Thu, 17 Jul 2003 16:27:26 +0000
+
+lilo (1:22.5.6-1) unstable; urgency=low
+
+  * New upstream version.
+  * Added fallback= documentation to lilo.conf manpage. 
+    (closes: #198572)
+  * Added README.pseudo and README.volumeID to documentation.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sun, 29 Jun 2003 17:19:16 +0000
+
+lilo (1:22.5.5-1) unstable; urgency=low
+
+  * New upstream version. (closes: #194666)
+  * Fixed bug on mkrescue script. (closes: #198673)
+  * Added another Debian bitmap submitted by Alfonso Acosta. Maybe there is
+    someone that likes this bitmap more than the others. (closes: #197382)
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Fri, 20 Jun 2003 17:11:16 +0000
+
+lilo (1:22.5.4-2) unstable; urgency=low
+
+  * Fixed some typos.
+  * lilo.templates updated (including translated templates).
+  * Now lilo manpage refers to mkboot instead of mkbootdisk which doesn't
+    exist. (closes: #196217)
+  * Updated debian/patches dir to fit new dpatch needs.
+  * Added icon for liloconfig. (closes: #192643)
+  * Bumped standards version to 3.5.10.
+  * Added Debian GNU/Linux string to any verbose level option.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Mon,  9 Jun 2003 16:30:44 +0000
+
+lilo (1:22.5.4-1) unstable; urgency=low
+
+  * New upstream version.
+  * Removed smarter_cache() call on lilo.c until the upstrem improve this
+    funcion. (closes: #193730)
+  * Added ja.po file submitter by Tomohiro KUBOTA. (closes: #192428)
+  * Removed patch from Colin Watson since upstream has realized the proper way
+    to do that :)
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Mon, 26 May 2003 14:13:42 +0000
+
+lilo (1:22.5.3.1-1) unstable; urgency=low
+  
+  * The "LILO para el mundo" release.
+  * New upstream version.
+  * Added po-based templates patch submitted from Christian Perrier (thank
+    you :) (closes: #192126)
+  * debian/rules now cleans debian/lilo.substvars.
+  * Changed lilo prompt to avoid ugly feature on the boot menu. (closes:
+    #192345, #192498)
+  * Added fr_FR.po submitted by Christian Perrier.
+  * Added pt_BR.po submitted by Andre Luis Lopes. (closes: #192832).
+  * debconf cleaning due to multiple requests (closes: #192038)
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Wed, 14 May 2003 19:38:10 +0000
+
+lilo (1:22.5.2-2) unstable; urgency=low
+
+  * LILO configuration debconf message will be showed only when /etc/lilo.conf
+    does not exists.
+  * Added patch that allows users with devfs support compiled on kernel but
+    not using it, can use lilo. (closes: #191878, #191812)
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sun,  4 May 2003 18:20:03 +0000
+
+lilo (1:22.5.2-1) unstable; urgency=low
+
+  * The "I had to do it, Sargent" release.
+
+  * Luis Bustamante <luferbu@fluidsignal.com>
+    - Clean up of copyright file
+    - Fixed typos on README.bitmap. (closes: #121133)
+  
+  * Andrés Roldán <aroldan@fluidsignal.com>
+    - New upstream version. (closes: #191509)
+    - Removed stdout patch since it is already on the original tarball.
+    - Now lilo uses debconf. (closes: #190090, #108300, #122348)
+    - Fixed the big problem of typo mistake. (closes: #191153)
+    - Applied patch submitted by Colin Watson to fix obscure manpage error.
+      (closes: #191339)
+  
+ -- Luis Bustamante <luferbu@fluidsignal.com>  Fri,  2 May 2003 13:07:25 +0000
+
+lilo (1:22.5.1-3) unstable; urgency=low
+
+  * Added boot menu for Sid and Sarge from debian-bootscreen. liloconfig has
+    been changed to use Sid bitmap by default.
+    (closes: #122479, #145466)
+  * Now build depends on sharutils.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Wed, 23 Apr 2003 15:50:09 +0000
+
+lilo (1:22.5.1-2) unstable; urgency=low
+
+  * More debian/ directory cleaning.
+  * Applied minimal upstream patch.
+  * Make message in the default boot screen a little bit clearer. 
+    (closes: #177066)
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Tue, 22 Apr 2003 02:54:23 +0000
+
+lilo (1:22.5.1-1) unstable; urgency=low
+
+  * New upstream version.
+  * Removed DX protect patch since it is already include in the original
+    source.
+  * Added lilo.menu to install a menu entry for liloconfig. (closes: #187734)
+  * Cleaning and review of debian/rules.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sat,  5 Apr 2003 20:49:31 +0000
+
+lilo (1:22.5-1) unstable; urgency=low
+
+  * New upstream version.
+  * Changed lilo.conf.5 duplicate paragraph mistake.
+  * Now --purge will erase /boot/boot.b since it is an obsolete file.
+    The other two files that are mentioned in this bug are already
+    being handled by --purge. (closes: #147446)
+  * Now build depends on dpatch package.
+  * Applied DX protect patch provided by upstream.
+  * Added activate.8 manpage.
+  * Removed deprecated dh_testversion from rules file.
+  * Bumped Standards-Version to 3.5.9.0, no changes necessary.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sun, 30 Mar 2003 15:57:02 +0000
+
+lilo (1:22.4.1-1) unstable; urgency=low
+
+  * New upstream version. (closes: #160686)
+  * New maintainer. (closes: #179055)
+  * Splitted former patch into debian/patches directory.
+  * Added help to lilo.conf man page by adding devfs=mount option in the 
+    "append" kernel boot options. (closes: #177761)
+  * Updated to standards version 3.5.8.
+
+ -- Andrés Roldán <aroldan@fluidsignal.com>  Sat, 26 Feb 2003 09:30:10 -0500
+
+lilo (1:22.4-2) unstable; urgency=medium
+
+  * Put the wrong file name in the previous version, this version really
+    fixed #173238.
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 26 Jan 2003 14:14:00 +0100
+
+lilo (1:22.4-1) unstable; urgency=medium
+
+  * New upstream version.
+
+  * Fixes mkrescue to use mktemp.
+    Closes: #173238
+
+  * Please note that lba32 is the default mode for LILO (and has been for
+    some time).  If you have an ancient system (Pentium <100MHz or 486) then
+    there is a possibility that lba32 may not work and that you need to
+    use "linear".  Consult the manual for more details.
+    Closes: #153950
+
+  * Fixes mem= options as described in bug 160123.
+
+  * Added vmdefault, vmdisable, and vmwarn options to lilo.conf for better
+    support of vmware.
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 26 Jan 2003 13:23:00 +0100
+
+lilo (1:22.3.3-2) unstable; urgency=medium
+
+  * Changed the postrm script to only remove lilo.conf from /etc (not
+    lilo.conf*)
+    Closes: #159079
+
+ -- Russell Coker <russell@coker.com.au>  Sun,  1 Sep 2002 15:38:00 +0200
+
+lilo (1:22.3.3-1) unstable; urgency=medium
+
+  * New upstream version that adds EVMS support.
+    Closes: #152097
+
+  * Changed the postinst script to use readlink for checking link status.
+    Closes: #159055
+
+ -- Russell Coker <russell@coker.com.au>  Sun,  1 Sep 2002 07:14:00 +0200
+
+lilo (1:22.3.2-3) unstable; urgency=medium
+
+  * Remove /boot/map and /boot/0[0-9][0-9][0-9] on purge (/boot/boot.b is
+    removed on installation and is not needed any more).  Addresses the
+    issue of bug 147446.
+
+  * Added nasm to build-dependencies.
+    Closes: #158910
+
+ -- Russell Coker <russell@coker.com.au>  Sat, 31 Aug 2002 11:04:00 +0200
+
+lilo (1:22.3.2-2) unstable; urgency=medium
+
+  * Stop producing boot-compat.b type code.
+
+  * Removed the code for removing old debconf stuff.
+
+  * 22.3.x doesn't support /boot/*.b files so not installing them.
+    Use "loader=text" for text mode.
+
+ -- Russell Coker <russell@coker.com.au>  Wed, 28 Aug 2002 20:02:00 +0200
+
+lilo (1:22.3.2-1) unstable; urgency=HIGH
+
+  * New upstream version.
+    Closes: #136757
+
+ -- Russell Coker <russell@coker.com.au>  Sat,  3 Aug 2002 23:34:00 +0200
+
+lilo (1:22.2-5) unstable; urgency=HIGH
+
+  * Fixed the sym-link creation in postinst.
+    Closes: #151058
+
+ -- Russell Coker <russell@coker.com.au>  Wed, 26 Jun 2002 10:23:00 -0400
+
+lilo (1:22.2-4) unstable; urgency=HIGH
+
+  * Fixed Makefile.floppy
+    Closes: #150943
+
+  * Added fix from NMU.
+    Closes: #146350, #140243
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 25 Jun 2002 12:14:00 -0400
+
+lilo (1:22.2-3.1) unstable; urgency=HIGH
+
+  * This upstream version uses int15,0xe820 to fetch the memory map.
+    However, sufficiently many systems don't implement this interrupt
+    correctly.  We avoid the errant code for now.  The next upstream
+    release fixes this problem for real.  Note to Russell: this patch must
+    be removed for the next upstream release.
+    Closes: #146350, #140243
+
+ -- Marc Singer <elf@buici.com>  Fri, 10 May 2002 19:18:25 -0700
+
+lilo (1:22.2-3) unstable; urgency=HIGH
+
+  * Removed dependency on debconf.
+    Closes: #142714
+
+ -- Russell Coker <russell@coker.com.au>  Sat, 13 Apr 2002 20:56:00 +0200
+
+lilo (1:22.2-2) unstable; urgency=LOW
+
+  * Fixed most of the keymap problems in #124186.
+
+  * Added patch for verbosity on symlinks.
+    Closes: #133993
+
+ -- Russell Coker <russell@coker.com.au>  Sat, 16 Feb 2002 13:56:00 +1100
+
+lilo (1:22.2-1) unstable; urgency=LOW
+
+  * New upstream version.  Adds LVM support.
+
+  * Remove the /boot/boot-bmp.b.preserved file after running lilo.
+
+ -- Russell Coker <russell@coker.com.au>  Fri,  8 Feb 2002 12:13:00 +1000
+
+lilo (1:22.1-6) unstable; urgency=HIGH
+
+  * Fixed the preinst script to preserve boot-bmp.b.
+    Closes: #124280
+
+ -- Russell Coker <russell@coker.com.au>  Mon, 17 Dec 2001 07:52:00 +0100
+
+lilo (1:22.1-5) unstable; urgency=HIGH
+
+  * Same as before with high priority!
+
+ -- Russell Coker <russell@coker.com.au>  Wed,  5 Dec 2001 00:52:00 +0100
+
+lilo (1:22.1-4) unstable; urgency=LOW
+
+  * Made it correctly set the sym-link on a first install.
+    Closes: #122220
+
+ -- Russell Coker <russell@coker.com.au>  Tue,  4 Dec 2001 00:53:00 +0100
+
+lilo (1:22.1-3) unstable; urgency=LOW
+
+  * Stopped referring to /usr/lib/apt in the docs.
+    Closes: #121786
+
+  * Added mkrescue to the package.
+    Closes: #121790
+
+ -- Russell Coker <russell@coker.com.au>  Fri, 30 Nov 2001 09:47:00 +0100
+
+lilo (1:22.1-2) unstable; urgency=LOW
+
+  * Changed the new "append=" manpage section to match the upstream.
+
+  * Changed the symlink to be relative not absolute for boot.b.
+    Closes: #120130
+
+  * Added a mention in INCOMPAT about the lilo-doc package.
+    Closes: #119194
+
+  * Made the postinst exit cleanly and quietly if the /etc/fstab contains
+    "^# UNCONFIGURED FSTAB FOR BASE SYSTEM".  Should fix #116185.
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 20 Nov 2001 01:30:00 +0100
+
+lilo (1:22.1-1) unstable; urgency=LOW
+
+  * Support for splash screens added thanks to Raphael Bossek.
+
+ -- Russell Coker <russell@coker.com.au>  Sun,  4 Nov 2001 13:21:00 +0100
+
+lilo (1:22.1-0) unstable; urgency=MEDIUM
+
+  * New upstream version.
+    Closes: #117877
+
+  * THE NEW RAID1 IMPLEMENTATION IS NOT COMPATIBLE WITH VERSION 21.
+    Those using version 21 should read 'README.raid1' in the lilo-doc package
+    before installing these new codes.  There is a compatibility mode
+    (lilo -x mbr-only) for existing RAID1 installations which are not going to
+    be converted to the Version 22 implementation.
+
+  * Adds SHS digests for password.
+    Closes: #12341
+
+  * Massively improved support for software RAID1.  Supports booting from RAID1
+    on disks with different geometries and great control over how RAID1 booting
+    works.
+    Closes: #95706
+
+  * Clarified the way "append=" in lilo.conf(5).
+    Closes: #117724
+
+ -- Russell Coker <russell@coker.com.au>  Fri,  2 Nov 2001 21:56:00 +0100
+
+lilo (1:21.7.5-9) unstable; urgency=MEDIUM
+
+  * Minor changing to the wording of liloconfig when referencing partition
+    numbers.
+    Closes: #109882
+
+  * Changed the postinst code related to working around debconf.  Now it takes
+    input from /dev/tty but leaves output to the default stdout.
+    Closes: #114190, #110258
+
+ -- Russell Coker <russell@coker.com.au>  Sun,  7 Oct 2001 12:23:08 +0200
+
+lilo (1:21.7.5-8) unstable; urgency=HIGH
+
+  * Fixed a terrible bug whereby upgrading the package twice without installing
+    a new boot block would not preserve the *.b files and potentially render
+    the system unbootable!
+    Closes: #108453
+
+ -- Russell Coker <russell@coker.com.au>  Fri, 21 Sep 2001 00:43:50 +0200
+
+lilo (1:21.7.5-7) unstable; urgency=MEDIUM
+
+  * Made /sbin/lilo not remove preserved files if -t is specified.
+    Closes: #106955
+
+ -- Russell Coker <russell@coker.com.au>  Wed,  1 Aug 2001 17:08:57 +0200
+
+lilo (1:21.7.5-6) unstable; urgency=MEDIUM
+
+  * Change /sbin/lilo to not remove preserved files if chroot operation is
+    selected.  Also made it run $0.real instead of /sbin/lilo.real.
+    Closes: #106956
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 31 Jul 2001 05:41:05 +0200
+
+lilo (1:21.7.5-5) unstable; urgency=MEDIUM
+
+  * Removed logrotate use.  Logrotate always changes the format of it's config
+    and makes things more painful than the benefit it offers.
+    Closes: #90588 #105474
+
+  * Double-check for a sym-link when rotating files to work around a base bug.
+
+ -- Russell Coker <russell@coker.com.au>  Mon, 16 Jul 2001 15:55:25 +0200
+
+lilo (1:21.7.5-4) unstable; urgency=MEDIUM
+
+  * Made it purge old debconf settings.
+    Closes: #98401
+
+  * Change the man page for lilo.conf to mention that vga= can be in hex.
+    Closes: #51800
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 15 Jul 2001 10:18:09 +0200
+
+lilo (1:21.7.5-3) unstable; urgency=MEDIUM
+
+  * Changed liloconfig to match the latest command-line params for activate.
+    Closes: #99111
+
+  * Made /boot/boot.b a sym-link as is recommended.
+    Closes: #100036
+
+  * Made liloconfig ask about lba32 for large disks when generating lilo.conf.
+    Will back-port this to potato.
+    Closes: #89020
+
+ -- Russell Coker <russell@coker.com.au>  Wed, 11 Jul 2001 22:05:04 +0200
+
+lilo (1:21.7.5-2) unstable; urgency=MEDIUM
+
+  * Made liloconfig not use strict.
+    Closes: #64398
+
+  * Fixed the /usr/doc reference in liloconfig.8.
+    Closes: #102802
+
+  * Fixed the /usr/doc reference in keytablilo.8.
+    Closes: #102803
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 10 Jul 2001 22:02:22 +0200
+
+lilo (1:21.7.5-1) unstable; urgency=MEDIUM
+
+  * Fixed some bugs in the liloconfig script that prevent creation of lilo.conf.
+    Closes: #98756
+
+  * Use install-mbr to install the Debian MBR.
+    Closes: #98757
+
+ -- Russell Coker <russell@coker.com.au>  Mon, 28 May 2001 16:20:57 +0200
+
+lilo (1:21.7.5-0) unstable; urgency=MEDIUM
+
+  * New upstream version.  Better support for DAC960 and some bug fixes.
+
+  * Removed the debconf code.
+
+ -- Russell Coker <russell@coker.com.au>  Thu, 10 May 2001 12:03:51 +0200
+
+lilo (1:21.7.1-5) unstable; urgency=MEDIUM
+
+  * Changed the postinst to not source debconf and to not have an "exit 0"
+    at the end.  It makes no difference to the operation but makes it look
+    nicer.
+
+  * Put /usr/sbin/liloconfig back in.
+    Closes: #96331
+
+  * Made compilation use -O2.
+
+ -- Russell Coker <russell@coker.com.au>  Thu, 10 May 2001 09:57:58 +0200
+
+lilo (1:21.7.1-4) unstable; urgency=LOW
+
+  * Fised a typo in liloconfig.
+    Closes: #95715
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 29 Apr 2001 20:41:48 +0200
+
+lilo (1:21.7.1-3) unstable; urgency=MEDIUM
+
+  * Changed the logrotate file to match the undocumented functionality of the
+    latest logrotate.
+    Closes: #95665, #95556
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 29 Apr 2001 10:00:00 +0200
+
+lilo (1:21.7.1-2) unstable; urgency=LOW
+
+  * Changed liloconfig to be a bit clearer.
+    Closes: #95559
+
+  * Changed the description of AUTOREPLACE.
+    Closes: #95556
+
+ -- Russell Coker <russell@coker.com.au>  Sat, 28 Apr 2001 07:56:09 +0200
+
+lilo (1:21.7.1-1) unstable; urgency=LOW
+
+  * Added debconf support for serial console and for parameters to install-mbr.
+
+  * Added new /boot/boot-compat.b for broken SystemSoft BIOS.
+    Closes: #59953
+
+ -- Russell Coker <russell@coker.com.au>  Sat, 28 Apr 2001 07:20:59 +0200
+
+lilo (1:21.7.1-0) unstable; urgency=HIGH
+
+  * New upstream release containing minor bug fixes.  Most of the code was
+    already in the previous version as Debian specific patches and this release
+    brings the Debian version closer to the upstream release.
+
+  * Fixed the keytab-lilo manpage to not be a hack.
+
+  * Fixed the /sbin/lilo wrapper to correctly delete the old files.
+
+  * Changed the way automatic generation of lilo config files operates.
+    Now it will grep for "^#AUTOREPLACE$" in /etc/lilo.conf to determine
+    whether it should replace the file.
+    Closes: #92284
+
+  * Made it rotate /etc/lilo.conf.old on install.
+
+ -- Russell Coker <russell@coker.com.au>  Fri, 27 Apr 2001 15:51:07 +0200
+
+lilo (1:21.7-3) unstable; urgency=HIGH
+
+  * Added a patch from Compaq to address the issue described in bug report
+    88831.  Not closing the bug report because it refers to Potato.
+
+ -- Russell Coker <russell@coker.com.au>  Wed, 7 Mar 2001 15:58:22 +0100
+
+lilo (1:21.7-2) unstable; urgency=HIGH
+
+  * Fixed the "preinst shouldn't depend on package files" thing again
+    (/etc/lilo-rotate.conf: No such file or directory).
+    Closes: #87790
+    Closes: #87795
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 27 Feb 2001 20:43:29 +0100
+
+lilo (1:21.7-1) unstable; urgency=HIGH
+
+  * Made it work with devfs style /dev/md/%d devices.
+
+  * Made the lilo wrapper work with `lilo -C "/etc/spare lilo config"` type
+    invocation.
+
+  * Now it pre-depends on logrotate, so if you try installing with `dpkg -i`
+    and logrotate isn't installed it won't replace the boot.b file that
+    /boot/map references if you do another `dpkg -i`.
+
+  * Now installs the Debian MBR as it should.
+    Closes: #81652
+    Closes: #59732
+
+ -- Russell Coker <russell@coker.com.au>  Mon, 26 Feb 2001 15:09:27 +0100
+
+lilo (1:21.7-0) unstable; urgency=HIGH
+
+  * New upstream version.
+
+  * Make it suggest mbr not recommend.
+    Closes: #77591
+
+  * Updated the copyright file.
+    Closes: #64877
+
+  * Changed the lilo wrapper to not be bash specific.
+    Closes: #87413
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 25 Feb 2001 12:30:42 +0100
+
+lilo (1:21.6-14) unstable; urgency=HIGH
+
+  * Fixed a stupid bug that made it give spurious errors if you run "lilo"
+    twice.
+
+  * Made it depend on logrotate.
+    Closes: #87310, #87428, #87393, #87443
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 25 Feb 2001 01:49:51 +0100
+
+lilo (1:21.6-13) unstable; urgency=HIGH
+
+  * The support for non-root file system installation of the LILO block in
+    the previous version has satisfied the person who reported the bug.
+    Closes: #86992
+
+  * The new upstream version apparently stopped lilo giving a segv on bad
+    config files.
+    Closes: #78193
+
+  * Fixed the man page situation, made it use the new dh_installman instead of
+    the old dh_installmanpages.
+
+  * Now it doesn't run lilo on package install.  It keeps preserving files
+    under /boot until a successful run of lilo.
+
+ -- Russell Coker <russell@coker.com.au>  Fri, 23 Feb 2001 19:22:03 +0100
+
+lilo (1:21.6-12) unstable; urgency=HIGH
+
+  * Fix the template again for VGA.
+
+  * Trim the length of overly long label fields.
+
+  * Made it work on DOS-format files.
+    Closes: #77135
+
+  * The compact option is documented as causing problems on some systems.
+    The fact that it used to work on an ancient version is not something I
+    am able to investigate.  Please open another bug report if something
+    similar occurs with a recent version.
+    Closes: #30618
+
+  * Can't reproduce bug and reporter has disappeared.
+    Closes: #33724
+
+  * Added support for installing LILO in the boot sector of a partition other
+    than the root FS.
+
+ -- Russell Coker <russell@coker.com.au>  Thu, 22 Feb 2001 13:46:56 +0100
+
+lilo (1:21.6-11) unstable; urgency=HIGH
+
+  * Adds conflicts with ancient manpages package to ensure smooth upgrade.
+    Closes: #86772
+
+  * Better description for VGA mode.
+    Closes: #81342
+
+  * Fixed these /etc/lilo.conf bugs previously:
+    Closes: #81347, #81356, #81357, #81662, #82808, #83009
+
+  * Now run lilo on install of a new version.
+    Closes: #84771
+
+  * Fixed these lilo.conf.8 bugs previously:
+    Closes: #58202, #64783, #65120, #65820, #71053, #75902, #80482, #86772
+
+ -- Russell Coker <russell@coker.com.au>  Wed, 21 Feb 2001 11:25:14 +0100
+
+lilo (1:21.6-10) unstable; urgency=HIGH
+
+  * Changes LiLO to LILO
+    Closes:#83158
+
+  * Fixes spelling and grammar.
+    Closes:#83160
+
+  * Preserve boot-menu.b
+
+  * Make the lba choice high importance.
+
+  * Fix the compact entry in the templates file.
+    Closes:#85721
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 13 Feb 2001 11:11:11 +0100
+
+lilo (1:21.6-9) unstable; urgency=HIGH
+
+  * Fix the priority and section of lilo-doc.
+
+ -- Russell Coker <russell@coker.com.au>  Mon, 22 Jan 2001 14:03:15 +0100
+
+lilo (1:21.6-8) unstable; urgency=HIGH
+
+  * Upload it again.
+
+  * Change the default for "compact".
+
+ -- Russell Coker <russell@coker.com.au>  Fri, 19 Jan 2001 18:17:48 +1100
+
+lilo (1:21.6-7) unstable; urgency=HIGH
+
+  * Made debconf not call lilo_find_mbr (can't call it before it's installed).
+
+  * Build the package with the fixed dpkg.
+
+  * Corrected the time stamps.
+    Closes:#81820
+
+ -- Russell Coker <russell@coker.com.au>  Thu, 11 Jan 2001 12:24:37 +1100
+
+lilo (1:21.6-6) unstable; urgency=HIGH
+
+  * Closes:#81537
+
+  * Changed some of the descriptions in debconf template.
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 7 Jan 2001 21:11:00 +1100
+
+lilo (1:21.6-5) unstable; urgency=HIGH
+
+  * Made the debconf/liloconfig code check for -e (file exists) instead of
+    -f (type is file).  Now will work correctly when there are sym-links.
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 7 Jan 2001 20:59:54 +1100
+
+lilo (1:21.6-4) unstable; urgency=HIGH
+
+  * Made it install correctly even when debconf only displays critical messages.
+
+  * Made some changes to the way it determines when to create a lilo.conf file.
+
+  * Made it arrange images in /etc/lilo.conf in reverse strcmp order.
+
+  * Added support for /etc/lilo.conf.extra
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 7 Jan 2001 17:34:28 +1100
+
+lilo (1:21.6-3) unstable; urgency=HIGH
+
+  * Made numerous improvements to the debconf setup.  Added an option to not
+    change the /etc/lilo.conf file.
+    Closes: 81342, 81347
+
+ -- Russell Coker <russell@coker.com.au>  Sun, 7 Jan 2001 03:17:00 +1100
+
+lilo (1:21.6-2) unstable; urgency=MEDIUM
+
+  * Changed the lilo wrapper to not be bash specific.
+    Closes: #87413
+
+  * Added more functionality to debconf.
+
+ -- Russell Coker <russell@coker.com.au>  Fri, 5 Jan 2001 10:50:43 +1100
+
+lilo (1:21.6-1) unstable; urgency=MEDIUM
+
+  * Made it build lilo-doc package too.
+
+  * Added debconf support, thanks to Gergely Risko <risko@atom.hu>.
+
+ -- Russell Coker <russell@coker.com.au>  Tue, 2 Jan 2001 15:38:00 +1100
+
+lilo (1:21.6-0) unstable; urgency=MEDIUM
+
+  * Debianized the new version.
+    Closes: #80551, #75386, #75387
+
+  * Made liloconfig devfs aware and made it use mode 0600 for creating files.
+    Closes: #56906, 62540
+
+  * Included lilo.conf(5)
+    Closes: #58202, #64783, #65120, #65820, #71053, #75902, #80482
+
+  * Lilo adds the boot-menu.b file which gives a colored menu.  I think it
+    solves the problem of no color on boot.
+    Closes: #69253
+
+ -- Russell Coker <russell@coker.com.au>  Mon, 1 Jan 2001 21:41:29 +1100
+
+lilo (1:21.4.3-2) unstable; urgency=HIGH
+
+  * Include fix from the upstream author to restore booting capability
+    on big zImage kernel while keeping EBDA mode on.
+
+ -- Vincent Renardias <vincent@debian.org>  Sun, 21 May 2000 21:17:58 +0200
+
+lilo (1:21.4.3-1) unstable frozen; urgency=HIGH
+
+  * new upstream fix (should definatly fix the RAID problems)
+  * We now issue a BigFatWarning(tm) that older zImage kernels
+      bigger than 448kb will not boot but we can now access kernels
+      located above cylinder 1023.
+    closes: #63516: command 'lilo' fails (not SEGFAULT) if kernel is not bzImage.
+    closes: #63925: lilo: After upgrade - `Fatal: Kernel /vmlinuz is too big'.
+    closes: #62270: lilo 21.3-3 wont boot non-bzImage between 448k and 512k.
+    closes: #62060: can't install on a 34GiG IBM drive. make bzlilo fails.
+    closes: #61928: new LILO renders system unbootable.
+    closes: #61903: Fatal: Kernel /vmlinuz is too big.
+    closes: #60507: Lilo 0.22 installer should be provided (as It has support for huge disk).
+    closes: #64401: lilo: lilo refuses to create boot sector (kernel too big!).
+  * removed lilo.conf manpage which already is in package manpages.
+    closes: #63483: lilo: needs to Replace: version of manpages with the lilo manpage.
+    closes: #63533: conflicts with manpages.
+    closes: #63627: lilo: lilo tries to overwrite lilo.conf.5 manpage, that is also in manpages.
+    closes: #64077: lilo: lilo conflicts with manpages.
+
+ -- Vincent Renardias <vincent@debian.org>  Sat, 20 May 2000 00:30:28 +0200
+
+lilo (1:21.4.1-2) unstable; urgency=HIGH
+
+  * Fixed debian/control.
+    closes: #54178: lilo-doc: Incorrect package description.
+  * clean better.
+    closes: #60537: lilo.prerm is getting longer and longer :).
+
+ -- Vincent Renardias <vincent@debian.org>  Wed, 12 Apr 2000 13:29:10 +0200
+
+lilo (1:21.4.1-1) unstable; urgency=HIGH
+
+  * New upstream release.
+    closes: #61165: New upstream version 21.4.1 released 2000-03-20.
+    Should also fix:
+    closes: #61903: Fatal: Kernel /vmlinuz is too big.
+    closes: #58775: despite <1024 cylinders, can't install lilo.
+
+ -- Vincent Renardias <vincent@debian.org>  Wed, 12 Apr 2000 13:05:56 +0200
+
+lilo (1:21.3-3) unstable; urgency=HIGH
+
+  * This version supports booting from cylinders above 1024.
+    (Been in unstable for 3 weeks, and I got 0 complaints about it, so
+    I think it's definatly worth to include it in potato).
+
+ -- Vincent Renardias <vincent@debian.org>  Sat, 25 Mar 2000 13:57:10 +0100
+
+lilo (1:21.3-1) unstable; urgency=low
+
+  * New version.
+    => LILO now doesn't have the 1024 cylinder limit anymore.
+
+ -- Vincent Renardias <vincent@debian.org>  Thu,  9 Mar 2000 16:06:02 +0100
+
+lilo (1:21-14) frozen unstable; urgency=low
+
+  * Really fix the liloconfig bug this time, honnest ;)
+    closes: #56326: liloconfig in lilo f***ed up.
+    closes: #56196: lilo: fstab check fails on root raid.
+    closes: #56322: Lilo install fails.
+
+ -- Vincent Renardias <vincent@debian.org>  Thu, 27 Jan 2000 14:46:34 +0100
+
+lilo (1:21-13) frozen unstable; urgency=low
+
+  * Fix detection of partition names.
+    closes: #56127: liloconfig bug and fix
+    closes: #56153: Makes too much assumptions about the relation of partition- and disk names
+
+ -- Vincent Renardias <vincent@debian.org>  Tue, 25 Jan 2000 15:19:45 +0100
+
+lilo (1:21-12) frozen unstable; urgency=low
+
+  * YANPFPM again ;)
+    closes: #53517: (Important) installed lilo bootsector during an upgrade when i didn't want it to.
+    closes: #54266: liloconfig error
+    closes: #51418: liloconfig: actions don't match text presented to user!
+
+ -- Vincent Renardias <vincent@debian.org>  Sun,  9 Jan 2000 13:30:06 +0100
+
+lilo (1:21-11) unstable; urgency=low
+
+  * Integrated YANPFPM (Yet Another Nice Patch From Peter Maydell ;):
+    blank lines in /etc/fstab should be ignored silently.
+    closes: #53517: installed lilo bootsector during an upgrade when i didn't want it to.
+
+ -- Vincent Renardias <vincent@debian.org>  Sun,  9 Jan 2000 13:30:06 +0100
+
+lilo (1:21-10) unstable; urgency=low
+
+  * Add patch to support Compaq Smart-2 (or better) Disk Array Controllers.
+
+ -- Vincent Renardias <vincent@debian.org>  Thu, 23 Dec 1999 13:53:00 +0100
+
+lilo (1:21-9) unstable; urgency=low
+
+  * put back the keytab-lilo manpage at the right place, and integrate
+    another patch from Peter Maydell (thanks again ;) that fixes keytab-lilo.pl
+    closes: #22958: lilo: keytab-lilo.pl is broken.
+
+ -- Vincent Renardias <vincent@debian.org>  Thu, 23 Dec 1999 13:53:00 +0100
+
+lilo (1:21-8) unstable; urgency=high
+
+  * Integrated patch from Peter Maydell that fixes:
+    - added error checking of various system calls
+    - added $DEBUG switch and pulled lilo.conf and fstab filenames
+      out into config variables.
+    - turned on Perl's -w switch and use strict subs/refs
+    - now does examination of current situation up front, separated
+      from the logic of what we do in various situations.
+    - added check for special marker in /etc/fstab that indicates that we
+      are configuring the base filesystem and shouldn't actually do anything.
+    Thanks Peter ;)
+    Now, if the first line of /etc/fstab is '# UNCONFIGURED FSTAB FOR BASE SYSTEM'
+    liloconfig will exit gracefully.
+    Anyway, liloconfig should probably be rewritten to use debconf...
+    closes: #49948: liloconfig makes bad lilo.conf when from scratch.
+  * Fix reference to Changelog.
+    closes: #52192: lilo: License refers to old, outdated '/usr/doc'.
+
+  * Other non-bugs/already fixed bugs:
+    closes: #48594: (no subject).
+      [Author aknowledges it's not a lilo bug.]
+    closes: #30562: lilo: shouldn't prompt on upgrade.
+      [liloconfig also checks for obsolete options in lilo.conf]
+    closes: #34616: lilo: lilo gives important installation warning, but does not pause.
+      [warning is now meaningless since lilo.conf is not part of the package anymore]
+
+ -- Vincent Renardias <vincent@debian.org>  Thu, 23 Dec 1999 12:09:40 +0100
+
+lilo (1:21-7) unstable; urgency=low
+
+  * re-upload working lilo-21.
+    Closes: #46154, #46168.
+
+ -- Vincent Renardias <vincent@debian.org>  Tue, 28 Sep 1999 12:17:37 +0200
+
+lilo (21-6) unstable; urgency=low
+
+  * Changed MBR size in liloconfig.
+    closes: #43768: mbr: Size should be 446, not 444.
+  * Don't supply an empty lilo.conf anymore.
+    closes: #42383, #41437.
+  * Correct bug in liloconfig.
+    closes: #35110: liloconfig doesn't complete installation
+  * Fix type in control file.
+    closes: #40753: lilo: typo in description.
+  * Included man page written by Peter Maydell. Thanks Peter!
+    closes: #32640: liloconfig(8) needs a manual page.
+  * Fixed Werner's email addr.
+    closes: #36817: Lilo home page.
+  * lintian cleaned.
+
+ -- Vincent Renardias <vincent@debian.org>  Mon, 27 Sep 1999 16:57:13 +0200
+
+lilo (21-5) unstable; urgency=low
+
+  * Move INCOMPAT.gz back from lilo-doc to lilo.
+    closes: #33259, #33124, #33119.
+    closes: #33203 (that actually was a bug in manpages which has been
+    fixed recently).
+
+ -- Vincent Renardias <vincent@debian.org>  Sun, 21 Feb 1999 19:09:51 +0100
+
+lilo (21-4) frozen unstable; urgency=low
+
+  * Adopt the package.
+  * Build with USE_TMPDIR option (Fix bug #9303).
+  * Fix typo in preinst script.
+  * Reason to upload for frozen:
+    1/ The previous upload fixed a lot of bugs and didn't seem
+       to break anything.
+    2/ The current version of lilo in slink (20-0.1) has a bug which
+       is specially bad: If NT4 is also installed on the machine, lilo
+       will prevent it to boot (error message: "INACCESSIBLE_BOOT_DEVICE" +
+       a nice BSOD).
+
+ -- Vincent Renardias <vincent@waw.com>  Sat, 30 Jan 1999 22:34:41 +0100
+
+lilo (21-3.1) unstable; urgency=low
+
+  * NMU to fix the bug #7570 I reported on Feb 22nd 1997
+    (include real doc instead of the TeX source).
+  * Include manpage for activate (Bug #10526,#8641).
+  * Include manpage for keytab-lilo.pl (Bug #10526).
+  * Add a link to undocumented.7.gz for liloconfig which has
+    no manpage.
+  * Close #20049 (This functionality is handled by syslinux,
+    not lilo).
+  * Fork a lilo-doc package to include the Postscript documentation.
+  * Have lilo Suggests: lilo-doc.
+  * Set severity of bug #29987 to fixed: When lilo.conf contains a passwd
+    and is not mode 600, it displays a proheminent warning.
+  * Set severity of bug #7629 to fixed: This is a perfectly legal option,
+    given that the Debian policy is not to install lilo in the MBR by
+    default.
+  * Reassign bugs #5198, #8280 and #10526 to the package manpages since
+    this is where lilo.8 lives. (Does anybody know why BTW?!)
+  * Put some (hopefully) usefull comments in the default lilo.conf
+    (Fix bug #25174).
+  * Include Adam Heath <adam@usa.net>'s patch to add the new
+    BOOT_VAR variable (Fix bug #30458).
+  * lintian cleaned:
+    - fix typo. in description.
+    - don't install QuickInst with executable bit set.
+    - include lilo.8 manpage (will open a BR on manpages so it
+        doesn't provide it anymore).
+  * Correct the lilo.8 manpage (Fix bug #5198) with patch from BR #10526.
+
+ -- Vincent Renardias <vincent@waw.com>  Sun, 24 Jan 1999 21:38:58 +0100
+
+lilo (21-3) unstable; urgency=high (21-2 may break boot)
+
+  * setting CFLAGS im make breaks lilo with debian headers (HAS_BOOT_H is not defined in that case -> NORMAL_VGA is missing)
+  * fixed return code checking in liloconfig (#30632)
+
+ -- Bernd Eckenfels <ecki@debian.org>  Sat, 12 Dec 1998 00:56:08 +0100
+
+lilo (21-2) unstable; urgency=low
+
+  * Old maintainer got the package back
+  * fixed broken depend again (#3772)
+  * uses dh now
+  * has an additional preinst now
+  * ln in /boot need not to work (#16112,#3247)
+  * dh installs changelog (#16582)
+  * pre/postinst now sets -e and watches arguments (#15161)
+  * use debians default keymap, use loadkeys to do all the work (#19900)
+  * checks for incompatible any_d.b (#26016)
+
+ -- Bernd Eckenfels <ecki@debian.org>  Thu, 10 Dec 1998 01:31:51 +0100
+
+lilo (21-1) unstable; urgency=low
+
+  * New maintainer.
+  * Update copyright information.
+  * Update to standards version 2.5.0.
+  * New upstream release.
+
+ -- Martin Mitchell <martin@debian.org>  Mon,  7 Dec 1998 17:47:10 +1100
+
+lilo (20-2) unstable frozen; urgency=low
+
+  * recompiled with new curses
+  * suggests mbr instead of depends
+
+ -- Bernd Eckenfels <ecki@debian.org>  Sun,  1 Nov 1998 01:26:19 +0100
+
+lilo (20-1) unstable frozen; urgency=low
+
+  * Maintainer release (thanks Martin!)
+
+ -- Bernd Eckenfels <ecki@debian.org>  Wed, 29 Apr 1998 21:18:40 +0200
+
+lilo (20-0.1) unstable; urgency=low
+
+  * Non-maintainer release.
+  * Leave copyright file uncompressed. (#14421)
+  * Libc6 compile. (#11708)
+  * New upstream sources. (#11081)
+
+ -- Martin Mitchell <martin@debian.org>  Sat, 22 Nov 1997 01:13:49 +1100
+
+lilo (19-2) unstable; urgency=low
+
+  * upgraded to new package standards
+
+ -- Shaya Potter <spotter@itd.nrl.navy.mil>  Thu, 23 Jan 1997 10:12:06 -0500
+

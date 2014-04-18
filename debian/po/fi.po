@@ -1,0 +1,150 @@
+# Translation of Lilo debconf templates to Finnish
+# This file is distributed under the same license as the Lilo package.
+#
+# Translators:
+#     Esko Arajärvi <edu@iki.fi>, 2009, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lilo 1:22.8-3.1\n"
+"Report-Msgid-Bugs-To: lilo@packages.debian.org\n"
+"POT-Creation-Date: 2011-03-14 15:48+0100\n"
+"PO-Revision-Date: 2011-03-19 12:42+0300\n"
+"Last-Translator: Esko Arajärvi <edu@iki.fi>\n"
+"Language-Team: debian-10n-finnish@lists.debian.org\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid "LILO configuration"
+msgstr "LILOn asetukset"
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid ""
+"It seems to be your first LILO installation. It is absolutely necessary to "
+"run liloconfig(8) when you complete this process and execute /sbin/lilo "
+"after this."
+msgstr ""
+"Tämä näyttää olevan ensimmäinen LILOn asennuskerta. Ohjelma liloconfig(8) on "
+"ehdottomasti ajettava asennuksen jälkeen ja sen jälkeen on ajettava komento "
+"/sbin/lilo."
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid "LILO won't work if you don't do this."
+msgstr "LILO ei toimi, jos näin ei tehdä."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid "Do you want to add the large-memory option?"
+msgstr "Käytetäänkö suuren muistin (large-memory) valitsinta?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+#, fuzzy
+#| msgid ""
+#| "By default, LILO loads the initrd file into the first 15MB of memory "
+#| "to avoid a BIOS limitation with older systems (earlier than 2001). "
+msgid ""
+"Usually LILO loads the initrd file into the first 15MB of memory to avoid a "
+"BIOS limitation with older systems (earlier than 2001 and few systems until "
+"2004)."
+msgstr ""
+"Oletuksena LILO lataa initrd-tiedoston käyttäen muistin ensimmäisiä 15 Mt "
+"välttääkseen vanhojen (vuotta 2001 aiempien) järjestelmien BIOS-rajoitteet."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"With newer kernels the combination of kernel and initrd may not fit into the "
+"first 15MB of memory. LILO will compute the needed size of memory and will "
+"automatically use the memory above 15MB, too, if there is enough physical "
+"memory."
+msgstr ""
+"Uudempien ytimien kanssa ytimen ja initrd:n yhdistelmälle ei välttämättä "
+"riitä ensimmäiset 15 Mt. LILO laskee tarvittavan muistin määrän ja käyttää "
+"automaattisesti ensimmäisten 15 Mt jälkeistä muistialuetta, jos muistia on "
+"tarpeeksi."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"If this machine has a recent BIOS without a 15MB limitation and you want to "
+"use memory above 15MB for all kernels, set the 'large-memory' option."
+msgstr ""
+"Jos järjestelmässä on uudehko BIOS, jossa ei ole 15 Mt rajoitusta, ja haluat "
+"käyttää yli 15 Mt muistia kaikkien ytimien kanssa, valitse valitsin ”large-"
+"memory”."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid "Do you want to run /sbin/lilo now?"
+msgstr "Ajetaanko /sbin/lilo nyt?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid ""
+"It was detected that it's necessary to run /sbin/lilo in order to activate "
+"the new LILO configuration."
+msgstr ""
+"LILOn uusien asetusten ottamiseksi käyttöön on tarpeellista ajaa komento "
+"/sbin/lilo."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+#, fuzzy
+#| msgid ""
+#| "WARNING: This procedure will write data in your MBR and may overwrite "
+#| "some things in that place. If you skip this step, you must run /sbin/lilo "
+#| "before reboot your computer or your system may not boot again."
+msgid ""
+"WARNING: This procedure will write data in your MBR and may overwrite some "
+"data there. If you skip this step, you must run /sbin/lilo before rebooting "
+"your computer, or your system may not boot again."
+msgstr ""
+"VAROITUS: Tämä prosessi kirjoittaa tietoja pääkäynnistyslohkoon (MBR) ja "
+"saattaa kirjoittaa siellä joidenkin tietojen päälle. Jos ohitat tämän "
+"vaiheen, ohjelma /sbin/lilo tulee ajaa ennen kuin järjestelmä käynnistetään "
+"uudelleen tai järjestelmä ei välttämättä käynnisty."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:4001
+msgid "Do you want to convert boot and root options?"
+msgstr "Muokataanko boot- ja root-valitsimia?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:4001
+#, fuzzy
+#| msgid ""
+#| "Until kernel using the newer disk interface 'libata' you need the newer "
+#| "DiskID and/or UUID in your /etc/lilo.conf the for boot and root options. For "
+#| "the most modern systems you should use this conversion and then run '/sbin/"
+#| "lilo'."
+msgid ""
+"Since kernel using the newer disk interface 'libata' you need the newer "
+"DiskID and/or UUID in your /etc/lilo.conf for the boot and root options. For "
+"the most modern systems you should use this conversion and then run '/sbin/"
+"lilo'."
+msgstr ""
+"Ennen ydintä, joka käyttää uudempaa levyrajapintaa ”libata”, täytyy "
+"tiedoston /etc/lilo.conf valitsimien boot ja root kenttiä DiskID tai UUID "
+"muokata. Useimmissa uudemmissa järjestelmissä tämä muutos tulisi tehdä ja "
+"sen jälkeen ajaa komento /sbin/lilo."

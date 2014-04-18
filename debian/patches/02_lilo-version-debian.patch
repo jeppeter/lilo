@@ -1,0 +1,41 @@
+Package:     lilo
+Subject:     add lilo version for Debian
+Author:      Joachim Wiedorn <ad_debian at joonet.de>
+Forwarded:   no
+Last-Update: 2013-06-07
+
+---
+
+diff -urN s01/src/crt.S s02/src/crt.S
+--- s01/src/crt.S	2010-11-01 16:32:09.000000000 +0100
++++ s02/src/crt.S	2011-05-06 17:26:25.856704412 +0200
+@@ -693,7 +693,7 @@
+ 
+ 
+ str_title:
+-	.ascii	"GNU/Linux - "
++	.ascii	"Debian - "
+ 	.ascii	"LILO "
+ #ifdef LCF_VERSION
+ 	.ascii	SA(VERSION_MAJOR)
+diff -urN s01/src/lilo.c s02/src/lilo.c
+--- s01/src/lilo.c	2011-04-09 18:40:33.000000000 +0200
++++ s02/src/lilo.c	2011-05-06 17:28:53.484698617 +0200
+@@ -824,7 +824,8 @@
+         else
+           printf(" (released %s)\n", VERSION_DATE);
+         if (version && verbose<=0) {
+-          /* exit if user asks for version and no verbose */
++          /* user asks for version without verbose */
++          printf ("(Debian GNU/Linux)\n");
+           return 0;
+         }
+         printf("  * Copyright (C) 1992-1998 Werner Almesberger  (until v20)\n"
+@@ -847,6 +848,7 @@
+           }
+ #endif
+         }
++        printf("Debian GNU/Linux\n");
+         printf("\n");
+         if (version) {
+             if (verbose>=2) configuration();

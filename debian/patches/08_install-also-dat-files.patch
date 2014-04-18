@@ -1,0 +1,35 @@
+Package:     lilo
+Subject:     install also dat files of menu backgrounds
+Author:      Joachim Wiedorn <ad_debian at joonet.de>
+Forwarded:   no
+Last-Update: 2010-11-13
+
+In some situations it is fine to have the original config files
+for the menu background images. So let us install these dat files.
+---
+
+diff -urN s07/images/Makefile s08/images/Makefile
+--- s07/images/Makefile	2010-11-04 13:26:28.000000000 +0100
++++ s08/images/Makefile	2010-11-13 18:39:14.558043894 +0100
+@@ -6,6 +6,8 @@
+ BINLILO := ../src/lilo
+ BMPS8 := coffee.bmp
+ BMPS4 := debian.bmp debian-de.bmp debianlilo.bmp inside.bmp onlyblue.bmp tuxlogo.bmp
++NAME8 := coffee
++NAME4 := debian debian-de debianlilo inside onlyblue tuxlogo
+ 
+ 
+ all: $(BMPS4) $(BMPS8)
+@@ -21,6 +23,12 @@
+ install: all
+ 	mkdir -p $$DESTDIR$(BOOT_DIR)
+ 	install -m 0644  $(BMPS4) $(BMPS8)  $$DESTDIR$(BOOT_DIR)
++	for i in $(NAME8); do
++		cp $(NAME8)_256c.dat $$DESTDIR$(BOOT_DIR)
++	done
++	for i in $(NAME4); do
++		cp $(NAME4)_16c.dat $$DESTDIR$(BOOT_DIR)
++	done
+ 
+ clean:
+ 	rm -f $(BMPS4) $(BMPS8)

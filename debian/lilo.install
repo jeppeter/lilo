@@ -1,0 +1,14 @@
+sbin/lilo
+usr/sbin/mkrescue
+usr/sbin/keytab-lilo
+usr/sbin/liloconfig
+usr/sbin/lilo-uuid-diskid
+etc/kernel/post*
+etc/initramfs/post*
+boot/*.bmp                          usr/share/lilo/
+boot/*.dat                          usr/share/lilo/
+debian/update-lilo                  usr/sbin/
+debian/lilo-term.xpm                usr/share/pixmaps/
+debian/floppy/Makefile              usr/lib/lilo/
+src/bootsect.b                      usr/lib/lilo/
+src/disk.com                        usr/lib/lilo/

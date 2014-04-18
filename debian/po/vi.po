@@ -1,0 +1,132 @@
+# Translation of Lilo debconf templates to Vietnamese
+# This file is distributed under the same license as the lilo package.
+#
+# Translators:
+#     Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lilo 1:22.8-6.3\n"
+"Report-Msgid-Bugs-To: lilo@packages.debian.org\n"
+"POT-Creation-Date: 2011-03-14 15:48+0100\n"
+"PO-Revision-Date: 2012-02-20 22:04+0700\n"
+"Last-Translator: Hung Tran <nguyentieuhau@gmail.com>\n"
+"Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.8\n"
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid "LILO configuration"
+msgstr "Cấu hình LILO"
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid ""
+"It seems to be your first LILO installation. It is absolutely necessary to "
+"run liloconfig(8) when you complete this process and execute /sbin/lilo "
+"after this."
+msgstr ""
+"Có vẻ như bạn đang cài đặt LILO lần đầu tiên. Hoàn toàn cần thiết để chạy "
+"liloconfig (8) khi bạn hoàn tất quá trình này và thực hiện /sbin/lilo sau đó."
+
+#. Type: note
+#. Description
+#: ../lilo.templates:1001
+msgid "LILO won't work if you don't do this."
+msgstr "LILO sẽ không hoạt động nếu bạn không làm điều này."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid "Do you want to add the large-memory option?"
+msgstr "Bạn có muốn thêm tùy chọn bộ nhớ lớn (large-memory) không?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"Usually LILO loads the initrd file into the first 15MB of memory to avoid a "
+"BIOS limitation with older systems (earlier than 2001 and few systems until "
+"2004)."
+msgstr ""
+"Thông thường LILO tải các tập tin initrd vào 15MB đầu tiên của bộ nhớ để "
+"tránh một giới hạn BIOS với hệ thống cũ hơn (trước năm 2001 và vài hệ thống "
+"cho đến năm 2004)."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"With newer kernels the combination of kernel and initrd may not fit into the "
+"first 15MB of memory. LILO will compute the needed size of memory and will "
+"automatically use the memory above 15MB, too, if there is enough physical "
+"memory."
+msgstr ""
+"Với những hạt nhân mới hơn, sự kết hợp của hạt nhân và initrd có thể không "
+"phù hợp với 15MB đầu tiên của bộ nhớ. LILO tính toán kích thước cần thiết "
+"của bộ nhớ sẽ tự động sử dụng bộ nhớ trên 15MB, nếu có đủ bộ nhớ vật lý."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:2001
+msgid ""
+"If this machine has a recent BIOS without a 15MB limitation and you want to "
+"use memory above 15MB for all kernels, set the 'large-memory' option."
+msgstr ""
+"Nếu máy tính này có một BIOS gần đây mà không có giới hạn 15MB và bạn muốn "
+"sử dụng bộ nhớ trên 15MB cho tất cả các hạt nhân, hãy thiết lập tùy chọn "
+"'large-memory'."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid "Do you want to run /sbin/lilo now?"
+msgstr "Bạn có muốn chạy /sbin/lilo ngay bây giờ không?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid ""
+"It was detected that it's necessary to run /sbin/lilo in order to activate "
+"the new LILO configuration."
+msgstr "Cần chạy /sbin/lilo để kích hoạt cấu hình LILO mới."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:3001
+msgid ""
+"WARNING: This procedure will write data in your MBR and may overwrite some "
+"data there. If you skip this step, you must run /sbin/lilo before rebooting "
+"your computer, or your system may not boot again."
+msgstr ""
+"CẢNH BÁO: Thủ tục này sẽ ghi dữ liệu vào MBR của bạn và có thể ghi đè lên "
+"một số dữ liệu. Nếu bạn bỏ qua bước này, bạn phải chạy /sbin/lilo trước khi "
+"khởi động lại máy tính của bạn, hoặc hệ thống của bạn sẽ không thể khởi động "
+"nữa."
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:4001
+msgid "Do you want to convert boot and root options?"
+msgstr "Bạn muốn chuyển đổi các tùy chọn khởi động và các tùy chọn root?"
+
+#. Type: boolean
+#. Description
+#: ../lilo.templates:4001
+msgid ""
+"Since kernel using the newer disk interface 'libata' you need the newer "
+"DiskID and/or UUID in your /etc/lilo.conf for the boot and root options. For "
+"the most modern systems you should use this conversion and then run '/sbin/"
+"lilo'."
+msgstr ""
+"Kể từ khi hạt nhân sử dụng giao diện đĩa mới hơn 'libata' bạn cần DiskID và/"
+"hoặc UUID mới hơn trong /etc/lilo.conf của bạn cho việc khởi động và các tùy "
+"chọn root. Đối với các hệ thống hiện đại nhất, bạn nên sử dụng chuyển đổi "
+"này và sau đó chạy '/sbin/lilo'."
