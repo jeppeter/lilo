@@ -849,9 +849,7 @@ static int winnt_check(struct VolumeMgmt *vm, int fatal)
 "This caution does not apply to Windows 95 or 98, or to NT data disks.\n"
 				, vm->name, MAJOR(dev), MINOR(dev), dev);
 					
-    if (test)
-       return 0;
-
+					
     ret = yesno("\nIs the above disk an NT boot disk? ", 1);
 
     if (ret && fatal) {

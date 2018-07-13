@@ -693,7 +693,7 @@ timer_dx: dw	0	; timer location
 
 
 str_title:
-	.ascii	"Ubuntu - "
+	.ascii	"GNU/Linux - "
 	.ascii	"LILO "
 #ifdef LCF_VERSION
 	.ascii	SA(VERSION_MAJOR)

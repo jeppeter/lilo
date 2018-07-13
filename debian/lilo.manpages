@@ -1,7 +1,0 @@
-man/keytab-lilo.8
-man/lilo.8
-man/lilo.conf.5
-man/mkrescue.8
-man/liloconfig.8
-man/lilo-uuid-diskid.8
-debian/manpages/update-lilo.8

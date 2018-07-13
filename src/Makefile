@@ -23,6 +23,7 @@ NASM=nasm
 G=`cat foo1 foo2 | grep version | cut -d " " -f 3`
 
 CFLAGS=$(OPT) -Wall $(PCONFIG)
+LDFLAGS=#-Xlinker -qmagic
 LIBS=$(DEVMAPPER)
 
 OBJS=lilo.o raid.o map.o geometry.o boot.o device.o common.o bsect.o cfg.o \
@@ -47,7 +48,7 @@ HFILES=bdata.h bitmap.h boot.h bsect.h cfg.h common.h config.h device.h \
 #
 # everything needed to run, just short of installation
 #
-all:	lilo bootsect.b diag1.img
+all:	lilo bootsect.b
 
 #
 # everything above plus the statically linked version
@@ -78,7 +79,7 @@ manpath:
 	echo $(MAN_DIR)
 
 .c.o:
-		$(CC) -c $(CPPFLAGS) $(CFLAGS) $*.c
+		$(CC) -c $(CFLAGS) $*.c
 
 .s.o:
 		$(AS86) -w -l $*.lis -o $*.o $*.s
@@ -90,7 +91,7 @@ manpath:
 		dd if=$*.img of=$*.b bs=32 skip=1
 
 edit:		$(EDIT)
-		$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -DSTANDALONE -o edit $(EDIT)
+		$(CC) $(CFLAGS) -DSTANDALONE -o edit $(EDIT) $(LDFLAGS)
 
 loader.i:	mkloader first.b second.b third.b bitmap.b mbr.b chain.b mbr2.b
 		./mkloader >loader.i
@@ -99,30 +100,30 @@ disk.com:	disk.b
 		cp disk.b disk.com
 
 disk.s:		disk.S read.S bdata.h biosdata.S lilo.h Makefile
-		$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) -o disk.s  disk.S
+		$(CPP) -traditional $(PCONFIG) -o disk.s  disk.S
 
 mbr.s:		mbr.S lilo.h Makefile
-		$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) -DMBR=0xafbbe760 \
+		$(CPP) -traditional $(PCONFIG) -DMBR=0xafbbe760 \
 			-o mbr.s  mbr.S
 
 mbr.b:		mbr.img
 		dd if=$*.img of=$*.b bs=32 skip=49
 
 mbr2.s:		mbr.S lilo.h Makefile
-		$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) -DMBX=0x93c00848 \
+		$(CPP) -traditional $(PCONFIG) -DMBX=0x93c00848 \
 			-o mbr2.s  mbr.S
 
 mbr2.b: mbr2.img
 	dd if=$*.img of=$*.b bs=32 skip=49
 
 bootsect.s: bootsect.S disk.b
-	$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) \
+	$(CPP) -traditional $(PCONFIG) \
 		-DSIZEDISKB=`wc -c <disk.b | sed "s/ //g"` \
 		-o bootsect.s  bootsect.S
 
 pseudo1.s: bootsect.S pseudo.S disk.com
 	cat bootsect.S pseudo.S >$(TMP).S
-	$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) \
+	$(CPP) -traditional $(PCONFIG) \
 		-DSIZEKRNL=`wc -c <disk.com | sed "s/ //g"` \
 		-DSIZEDISKB=512 -o pseudo1.s $(TMP).S
 	rm -f $(TMP).S
@@ -130,7 +131,7 @@ pseudo1.s: bootsect.S pseudo.S disk.com
 pseudo2.s: bootsect.S pseudo.S
 	$(MAKE) -C ../diagnose all
 	cat bootsect.S pseudo.S >$(TMP).S
-	$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) \
+	$(CPP) -traditional $(PCONFIG) \
 		-DSIZEKRNL=`wc -c <../diagnose/test4.com | sed "s/ //g"` \
 		-DSIZEDISKB=512 -o pseudo2.s $(TMP).S
 	rm -f $(TMP).S
@@ -138,7 +139,7 @@ pseudo2.s: bootsect.S pseudo.S
 pseudo3.s: bootsect.S pseudo.S
 	$(MAKE) -C ../diagnose all
 	cat bootsect.S pseudo.S >$(TMP).S
-	$(CPP) $(CPPFLAGS) -traditional $(PCONFIG) \
+	$(CPP) -traditional $(PCONFIG) \
 		-DSIZEKRNL=`wc -c <../diagnose/test5.com | sed "s/ //g"` \
 		-DSIZEDISKB=512 -o pseudo3.s $(TMP).S
 	rm -f $(TMP).S
@@ -175,13 +176,13 @@ dparam.s:	dparam.S
 		cp -p dparam.S dparam.s
 
 lilo:		$(OBJS)
-		$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o lilo $(OBJS) $(LIBS)
+		$(CC) -o lilo $(LDFLAGS) $(OBJS) $(LIBS)
 
 lilo.static:	$(OBJS)
-		$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o lilo.static -static $(OBJS) $(LIBS)
+		$(CC) -o lilo.static -static $(LDFLAGS) $(OBJS) $(LIBS)
 
 common.s:	common.h
-		$(CPP) $(CPPFLAGS) -C -traditional -DLILO_ASM -o common.s common.h
+		$(CPP) -C -traditional -DLILO_ASM -o common.s common.h
 
 bitmap.o: bitmap.s common.s
 third.o: third.s common.s
@@ -190,25 +191,25 @@ first.o: first.s common.s
 chain.o: chain.s common.s
 
 first.s:	first.S lilo.h version.h Makefile
-		$(CPP) $(CPPFLAGS) $(PCONFIG) -DFIRST=0x62177489 -o first.s first.S
+		$(CPP) $(PCONFIG) -DFIRST=0x62177489 -o first.s first.S
 
 second.s:	second.S read.S volume.S mapper.S biosdata.S shs3.S bdata.h lilo.h version.h \
 			graph.S menu.S strlen.S bitmap.S crt.S display4.S Makefile
-		$(CPP) $(CPPFLAGS) $(PCONFIG) -DTEXT=0x9dd476ec second.S -o second.s
+		$(CPP) $(PCONFIG) -DTEXT=0x9dd476ec second.S -o second.s
 
 third.s:	second.S read.S volume.S mapper.S biosdata.S shs3.S bdata.h lilo.h version.h \
 			graph.S menu.S strlen.S bitmap.S crt.S display4.S Makefile
-		$(CPP) $(CPPFLAGS) $(PCONFIG) -DMENU=0x2012a4a7 second.S -o third.s
+		$(CPP) $(PCONFIG) -DMENU=0x2012a4a7 second.S -o third.s
 
 bitmap.s:	second.S read.S volume.S mapper.S biosdata.S shs3.S bdata.h lilo.h version.h \
 			graph.S menu.S strlen.S bitmap.S crt.S display4.S Makefile
-		$(CPP) $(CPPFLAGS) $(PCONFIG) -DBITMAP=0x2ece2fbe second.S -o bitmap.s
+		$(CPP) $(PCONFIG) -DBITMAP=0x2ece2fbe second.S -o bitmap.s
 
 chain.s:	chain.S lilo.h version.h first.b Makefile
-		$(CPP) $(CPPFLAGS) $(PCONFIG) -DCHAIN=0x536a7646 chain.S -o chain.s
+		$(CPP) $(PCONFIG) -DCHAIN=0x536a7646 chain.S -o chain.s
 
 xxx.s:		chain.S lilo.h Makefile
-		$(CPP) $(CPPFLAGS) chain.S -DXXX -o xxx.s
+		$(CPP) chain.S -DXXX -o xxx.s
 
 $(OBJS):	Makefile
 
@@ -244,23 +245,20 @@ install:
 
 	strip lilo
 	cp lilo $$DESTDIR$(SBIN_DIR)/lilo
-	if [ -x lilo.static ]; then \
-	  strip lilo.static; \
-	  cp lilo.static $$DESTDIR$(SBIN_DIR)/lilo.static; \
-	fi
+	[ -x lilo.static ] && strip lilo.static
 	cp ../mkrescue $$DESTDIR$(USRSBIN_DIR)/mkrescue
 	cp ../keytab-lilo.pl $$DESTDIR$(USRSBIN_DIR)/keytab-lilo
 
 dep:
 	sed '/\#\#\# Dependencies/q' <Makefile >tmp_make
-	$(CPP) $(CFLAGS) $(CPPFLAGS) -MM *.c >>tmp_make
+	$(CPP) $(CFLAGS) -MM *.c >>tmp_make
 	mv tmp_make Makefile
 
 version:	common.c lilo.h common.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -DSHS_MAIN -o version common.c
+	$(CC) $(CFLAGS) -DSHS_MAIN -o version common.c
 
 mkloader:	temp.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -DLILO_BINARY -o mkloader temp.c
+	$(CC) $(CFLAGS) -DLILO_BINARY -o mkloader temp.c
 
 
 tidy:

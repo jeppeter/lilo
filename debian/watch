@@ -1,4 +1,0 @@
-# watch control file for uscan for the lilo package
-version=3
-http://alioth.debian.org/frs/?group_id=100507  .*/lilo-(\d.+).tar.gz
-

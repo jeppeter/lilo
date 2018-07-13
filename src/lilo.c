@@ -824,8 +824,7 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
         else
           printf(" (released %s)\n", VERSION_DATE);
         if (version && verbose<=0) {
-          /* user asks for version without verbose */
-          printf ("(Ubuntu GNU/Linux)\n");
+          /* exit if user asks for version and no verbose */
           return 0;
         }
         printf("  * Copyright (C) 1992-1998 Werner Almesberger  (until v20)\n"
@@ -848,7 +847,6 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
           }
 #endif
         }
-        printf("Ubuntu GNU/Linux\n");
         printf("\n");
         if (version) {
             if (verbose>=2) configuration();

@@ -226,10 +226,11 @@ void part_verify(int dev_nr,int type)
 	dos ? "  A DOS/Windows system may be rendered unbootable."
 		"\n  The backup copy of this boot sector should be retained."
 		: "" );
-	fprintf (errstd, "I will assume that you know what you're doing and I will proceed.\n");
 #if 0
 	if (!dos && !cfg_get_flag(cf_options,"ignore-table"))
 	    die("You may proceed by using either '-P ignore' or 'ignore-table'");
+#else
+	if (!yesno("\nProceed? ", 0)) exit(0);
 #endif
     }
     cyl = part_table[part].cyl+((part_table[part].sector >> 6) << 8);

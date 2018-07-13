@@ -7,9 +7,9 @@ tem, as well as the disk geometry of each of your hard drives.
 
 Creating the floppy
 ===================
-Change into the /usr/lib/lilo directory.  Insert a formatted floppy
-disk into the A: drive (/dev/fd0).  Type the command "make". A bootable
-floppy disk will be created.
+Change into the LILO source code directory.  Insert a formatted floppy
+disk into the A: drive (/dev/fd0).  Type the command "make floppy". 
+After the files have assembled, the bootable floppy disk will be created.
 
 Running the diagnostic
 ======================
