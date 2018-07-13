@@ -45,6 +45,7 @@
 #include "probe.h"
 #include "loader.h"
 #include "edit.h"
+#include "debug.h"
 
 #ifdef SHS_PASSWORDS
 #include "shs2.h"
@@ -100,8 +101,8 @@ BUILTIN_FILE *select_loader(void)
 	
     adapter = get_video();	/* from probe.c */
 
-    if (adapter <= VIDEO_UNKNOWN && (verbose>=2 || loader==&Bitmap))
-	    warn("Unable to determine video adapter in use in the present system.");
+    if (adapter <= VIDEO_UNKNOWN && ( loader==&Bitmap))
+	    INFO_PRINTF("Unable to determine video adapter in use in the present system.");
     if (loader == &Third && adapter == VIDEO_CGA)
 	    warn("Video adapter (CGA) is incompatible with the boot loader selected for\n"
 	    			"  installation ('install = menu').");
@@ -128,7 +129,7 @@ static char *disallow[] = {
     char *here, **dis = disallow;
     int error = 0;
 
-    if (verbose >= 5) printf("check_options: \"%s\"\n", options);
+    TRACE_PRINTF("check_options: \"%s\"\n", options);
     if (strlen(options) > COMMAND_LINE_SIZE-1) {
 	warn("Command line options > %d will be truncated.", COMMAND_LINE_SIZE-1);
     }
@@ -191,7 +192,7 @@ static int getval(char **cp, int low, int high, int default_value, int factor)
 	if (**cp && !ispunct(**cp)) die("Invalid character: \"%c\"", **cp);
 	if (**cp) (*cp)++;
     }
-    if (verbose>=5) printf("getval: %d\n", default_value);
+    TRACE_PRINTF("getval: %d\n", default_value);
     
     return default_value;
 }
@@ -265,7 +266,7 @@ void pw_file_update(int passw)
     PASSWORD *walk;
     int i;
     
-    if (verbose>=4) printf("pw_file_update:  passw=%d\n", passw);
+    DEBUG_PRINTF("pw_file_update:  passw=%d\n", passw);
 
     if (passw && !test && pw_file) {
 	if (fseek(pw_file,0L,SEEK_SET)) perror("pw_file_update");
@@ -287,11 +288,11 @@ void pw_fill_cache(void)
     PASSWORD *new;
     int i;
      
-    if (verbose>=5) printf("pw_fill_cache\n");    
+    TRACE_PRINTF("pw_fill_cache\n");    
     if (fseek(pw_file,0L,SEEK_SET)) perror("pw_fill_cache");
     
     while (fgets(line,MAX_TOKEN,pw_file)) {
-    	if (verbose>=5) printf("   %s\n", line);
+    	TRACE_PRINTF("   %s\n", line);
     	brace = strrchr(line,'>');
     	label = strchr(line,'<');
     	if (label && label[1]=='"' && brace && brace[-1]=='"') {
@@ -301,7 +302,7 @@ void pw_fill_cache(void)
 	    pwsave = new;
 	    new->unique = NULL;
 	    new->label = stralloc(label+2);
-	    if (verbose>=2) printf("Password file: label=%s\n", new->label);
+	    INFO_PRINTF("Password file: label=%s\n", new->label);
 	    brace++;
     	    for (i=0; i<MAX_PW_CRC; i++) {
 		new->crc[i] = strtoul(brace,&label,0);
@@ -310,7 +311,7 @@ void pw_fill_cache(void)
     	}
     	else die("Ill-formed line in .crc file");
     }
-    if (verbose >=5) printf("end pw_fill_cache\n");
+    TRACE_PRINTF("end pw_fill_cache\n");
 }
 
 static void hash_password(char *password, int crcval[])
@@ -336,12 +337,12 @@ static void hash_password(char *password, int crcval[])
 				shsInfo.digest[j];
   #define PWTYPE "SHS-160"
 #endif
-	    if(verbose >= 2) {
-		if (j==0) printf("Password " PWTYPE " =");
-		printf(" %08X", crc);
-	    }
+        if (j == 0) {
+            INFO_PRINTF("Password " PWTYPE " =");
+        } 
+        INFO_PRINTF(" %08X", crc);
 	}
-	if (verbose >= 2) printf("\n");
+    INFO_PRINTF("\n");
 }
 
 
@@ -441,11 +442,9 @@ static void retrieve_crc(int crcval[])
     if (pass) pw_get(pass,crcval,0);
     else pw_get(cfg_get_strg(cf_options,"password"),crcval,1);
 
-    if (verbose >= 2) {
-	printf("Password found is");
-	for (i=0; i<MAX_PW_CRC; i++) printf(" %08X", crcval[i]);
-	printf("\n");
-    }
+	INFO_PRINTF("Password found is");
+	for (i=0; i<MAX_PW_CRC; i++) INFO_PRINTF(" %08X", crcval[i]);
+	INFO_PRINTF("\n");
 }
 
 
@@ -454,8 +453,7 @@ static void open_bsect(char *boot_dev)
 {
     struct stat st;
 
-    if (verbose > 0)
-	printf("Reading boot sector from %s\n",boot_dev ? boot_dev :
+	WARN_PRINTF("Reading boot sector from %s\n",boot_dev ? boot_dev :
 	  "current root.");
     boot_devnam = boot_dev;
     if (!boot_dev || !strcmp(boot_dev, "/") ) {
@@ -556,8 +554,7 @@ static void menu_do_scheme(char *scheme, MENUTABLE *menu)
     if (menu->at_title == 0)  menu->at_title = menu->at_border;
     
     strncpy(menu->menu_sig, "MENU", 4);
-    if (verbose>=5)
-       printf("Menu attributes: text %02X  highlight %02X  border %02X  title %02X\n",
+    TRACE_PRINTF("Menu attributes: text %02X  highlight %02X  border %02X  title %02X\n",
        		(int)menu->at_text, (int)menu->at_highlight,
        		(int)menu->at_border, (int)menu->at_title);
 #undef color
@@ -589,11 +586,6 @@ void bsect_open(char *boot_dev,char *map_file,char *install,int delay,
     int i_fd;
 #endif
 
-#if 0
-printf("sizeof(IMAGE_DESCR) = %d\n", sizeof(IMAGE_DESCR));
-printf("sizeof(DESCR_SECTORS) = %d\n", sizeof(DESCR_SECTORS));
-printf("MAX_IMAGES = %d\n", MAX_IMAGES);
-#endif
     image = image_base = i = 0;
     memset(&menuparams, 0, sizeof(menuparams));
     if (stat(map_file,&st) >= 0 && !S_ISREG(st.st_mode))
@@ -632,12 +624,10 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 /* determine which secondary loader to use */
 
 	loader = select_loader();
-	if (verbose > 0) {
-	    printf("Using %s secondary loader\n",
+	    WARN_PRINTF("Using %s secondary loader\n",
 		loader==&Bitmap ? "BITMAP" :
 		loader==&Third  ? "MENU" :
 		"TEXT" );
-	}
 	memcpy(&bsect, First.data, MAX_BOOT_SIZE);
 
 	bsect.par_1.timestamp = timestamp;
@@ -656,14 +646,13 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 	/* fill in full size of secondary boot loader in paragraphs */
 	/*bsect.par_1.*/dataend = (sectors + 5 + (COMMAND_LINE_SIZE>256) + MAX_DESCR_SECS) * (SECTOR_SIZE/16);
 
-	if (verbose > 1)
-	    printf("Secondary loader: %d sector%s (0x%0X dataend).\n",sectors,sectors == 1 ?
+	INFO_PRINTF("Secondary loader: %d sector%s (0x%0X dataend).\n",sectors,sectors == 1 ?
 	      "" : "s", /*bsect.par_1.*/dataend*16);
 	stage_flags = ((BOOT_SECTOR*)(loader->data)) -> par_2.stage;
 	if ((stage_flags & 0xFF) != STAGE_SECOND)
 	    die("Ill-formed boot loader; no second stage section");
 
-	if (verbose>=4) printf("install(2) flags: 0x%04X\n", (int)stage_flags);
+	DEBUG_PRINTF("install(2) flags: 0x%04X\n", (int)stage_flags);
     }
 
 #ifndef EARLY_MAP
@@ -700,8 +689,7 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 	if ( (bios_map & 0x80) && !do_md_install &&
 		!cfg_get_flag(cf_options, "static-bios-codes") ) /* hard disk & not raid master */
 	    bsect.par_1.map_serial_no = serial_no[bios_map - 0x80];
-	if (verbose>=2)
-	    printf("bios_boot = 0x%02X  bios_map = 0x%02X  map==boot = %d  map S/N: %08X\n",
+	INFO_PRINTF("bios_boot = 0x%02X  bios_map = 0x%02X  map==boot = %d  map S/N: %08X\n",
 		bios_boot, bios_map,
 		!!(bsect.par_1.prompt&FLAG_MAP_ON_BOOT),
 		bsect.par_1.map_serial_no);
@@ -709,7 +697,7 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 /* code to get creation time of map file */
     if (stat(temp_map, &st) < 0) die("Cannot get map file status");
     param2.map_stamp = bsect.par_1.map_stamp = st.st_mtime;
-    if (verbose>=4) printf("Map time stamp: %08X\n", (int)bsect.par_1.map_stamp);
+    DEBUG_PRINTF("Map time stamp: %08X\n", (int)bsect.par_1.map_stamp);
 
     *(unsigned short *) &bsect.sector[BOOT_SIG_OFFSET] = BOOT_SIGNATURE;
     message = cfg_get_strg(cf_options,"message");
@@ -726,11 +714,11 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
     }
     j = -1;
     if (message) {
-	if (verbose >= 1) {
-	    printf("Mapping %s file %s", 
+	if (1) {
+	    WARN_PRINTF("Mapping %s file %s", 
 			bitmap ? "bitmap" : "message", message);
 	    show_link(message);
-	    printf("\n");
+	    WARN_PRINTF("\n");
 	}
 	m_fd = geo_open(&geo,message,O_RDONLY);
 	if (fstat(m_fd,&st) < 0) die("stat %s: %s",message,strerror(errno));
@@ -744,11 +732,9 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 	    if (j<0) die("read %s: %s", message, strerror(errno));
 	    if (j==0 || j>2) { /* definitely a bitmap file */
 		BITMAPHEADER *bmh = &bmhv;
-		if (verbose >= 3) {
-		    printf("width=%d height=%d planes=%d bits/plane=%d\n",
+		    LOG_PRINTF("width=%d height=%d planes=%d bits/plane=%d\n",
 			(int)bmh->width, (int)bmh->height,
 			(int)bmh->numBitPlanes, (int)bmh->numBitsPerPlane);
-		}
 		if (bmh->size == sizeof(BITMAPHEADER) &&
 			bmh->width==640 && bmh->height==480 && 
 		    	((bits = bmh->numBitPlanes * bmh->numBitsPerPlane) == 4 ||
@@ -772,8 +758,7 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 	map_insert_file (&geo,0,(st.st_size+SECTOR_SIZE-1)/SECTOR_SIZE);
 #endif
 	sectors = map_end_section(&menuparams.msg,0);
-	if (verbose >= 2)
-	    printf("%s: %d sector%s.\n",bitmap?"Bitmap":"Message",
+	INFO_PRINTF("%s: %d sector%s.\n",bitmap?"Bitmap":"Message",
 	    		sectors,sectors == 1 ?  "" : "s");
 	geo_close(&geo);
     }
@@ -828,7 +813,7 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 		    if (serial[2]) die("Syntax error in SERIAL");
 		}
 	    }
-	    if (verbose>=4) printf("Serial Param = 0x%02X\n", 
+	    DEBUG_PRINTF("Serial Param = 0x%02X\n", 
 						(int)param2.ser_param);
 	}
 	if (delay < 20 && !cfg_get_flag(cf_options,"prompt")) {
@@ -847,12 +832,10 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 #endif
 			0x80)) {
 		bsect.par_1.prompt |= FLAG_BD_OKAY;
-		if (verbose>=2)
-			printf("BIOS data check was okay on the last boot\n");
+		INFO_PRINTF("BIOS data check was okay on the last boot\n");
 	}
 	else {
-		if (verbose>=2)
-			printf("BIOS data check will include auto-suppress check\n");
+		INFO_PRINTF("BIOS data check will include auto-suppress check\n");
 	}
 	/* set to LARGEMEM only if 'large-memory' ist set AND 'small-memory is not set */
     if (cfg_get_flag(cf_options,"large-memory")
@@ -924,7 +907,7 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
     bmp_do_table(scheme, menu);
     if (bitmap) {
 	image_menu_space = menu->ncol * menu->maxcol;
-	if (verbose>=3) printf("image_menu_space = %d\n", image_menu_space);
+	LOG_PRINTF("image_menu_space = %d\n", image_menu_space);
     }
     if ((scheme = cfg_get_strg(cf_options,"bmp-colors"))) {
 	if (!(stage_flags & STAGE_FLAG_BMP4))
@@ -943,7 +926,7 @@ printf("MAX_IMAGES = %d\n", MAX_IMAGES);
 #endif
     memset(&descrs,0,SECTOR_SIZE*MAX_DESCR_SECS);
     if (cfg_get_strg(cf_options,"default")) image = image_base = 1;
-    if (verbose > 0) printf("\n");
+    WARN_PRINTF("\n");
 }
 
 
@@ -953,8 +936,7 @@ static int dev_number(char *dev)
 
     if (stat(dev,&st) >= 0) return st.st_rdev;
     if (!isdigit(*dev)) die("Illegal 'root=' specification: %s", dev);
-    if (verbose >= 1) 
-	printf("Warning: cannot 'stat' device \"%s\"; trying numerical conversion\n", dev);
+	WARN_PRINTF("Warning: cannot 'stat' device \"%s\"; trying numerical conversion\n", dev);
     return to_number(dev);
 }
 
@@ -1279,8 +1261,8 @@ static void bsect_done(char *name,IMAGE_DESCR *descr)
       (!alias || strlen(alias) > 1))
 	die("SINGLE-KEYSTROKE requires the label or the alias to be only "
 	  "a single character");
-    if (verbose >= 0) {
-	printf("Added %s",descrs.d.descr[this_image].name);
+    if (1) {
+	ERROR_PRINTF("Added %s",descrs.d.descr[this_image].name);
 	if (alias) printf(" (alias %s)",alias);
 #ifdef LCF_VIRTUAL
 	if (descrs.d.descr[this_image].flags & FLAG_VMDEFAULT ||
@@ -1306,15 +1288,15 @@ static void bsect_done(char *name,IMAGE_DESCR *descr)
 	if (this_image && this) putchar('\n');
 	else printf("  *\n");
     }
-    if (verbose >= 3) {
-	printf("%4s<dev=0x%02x,hd=%d,cyl=%d,sct=%d>\n","",
+    if (1) {
+	LOG_PRINTF("%4s<dev=0x%02x,hd=%d,cyl=%d,sct=%d>\n","",
 	  descr->start.device,
 	  descr->start.head,
 	  descr->start.track,
 	  descr->start.sector);
-	if (*options) printf("%4s\"%s\"\n","",options);
+	if (*options) LOG_PRINTF("%4s\"%s\"\n","",options);
     }
-    if (verbose >= 1) putchar('\n');   /* makes for nicer spacing */
+    if (1) putchar('\n');   /* makes for nicer spacing */
 }
 
 
@@ -1477,17 +1459,17 @@ if (pass>=0) {
 		*(short*)&bsect_wr.sector[space+1] += len;
 	}
 /***	bsect = bsect_orig;  ***/
-	if (verbose >= 1) printf("Boot sector relocation performed\n");
+	WARN_PRINTF("Boot sector relocation performed\n");
     }
     else bsect_wr = bsect;
 #endif    	
 
  /* failsafe check */
 #if 1
-    if (verbose >= 3) {
-	printf("Failsafe check:  boot_dev_nr = 0x%04x 0x%04x\n", boot_dev_nr, has_partitions(boot_dev_nr));
+    if (1) {
+	LOG_PRINTF("Failsafe check:  boot_dev_nr = 0x%04x 0x%04x\n", boot_dev_nr, has_partitions(boot_dev_nr));
 	/*** if (do_md_install) ***/ {
-	    printf("map==boot = %d    map s/n = %08X\n",
+	    LOG_PRINTF("map==boot = %d    map s/n = %08X\n",
 		!!(bsect_wr.par_1.prompt & FLAG_MAP_ON_BOOT),
 		bsect_wr.par_1.map_serial_no
 	    );
@@ -1529,7 +1511,7 @@ if (pass>=0) {
 	}
     }
 /*  (void) sync();   Now handled in lilo.c (atexit(sync)) */
-	if (verbose>=6) printf("End  bsect_update\n");
+	TRACE_PRINTF("End  bsect_update\n");
 	fflush(stdout);
 }
 
@@ -1543,7 +1525,7 @@ void bsect_cancel(void)
     if (!use_dev_close) (void) close(fd);
     else dev_close(&dev);
     temp_unregister(temp_map);
-    if (verbose<9) (void) remove(temp_map);
+    if (1) (void) remove(temp_map);
 }
 
 
@@ -1555,7 +1537,7 @@ static int present(char *var)
     if (!access(path,F_OK)) return 1;
     if (!cfg_get_flag(cf_all,"optional") && !cfg_get_flag(cf_options,
       "optional")) return 1;
-    if (verbose >= 0) printf("Skipping %s\n",path);
+    ERROR_PRINTF("Skipping %s\n",path);
     return 0;
 }
 
@@ -1570,7 +1552,7 @@ static int initrd_present(void)
     if (!access(path,F_OK)) return 1;
     if (!cfg_get_flag(cf_all,"optional") && !cfg_get_flag(cf_options,
       "optional")) return 1;
-    if (verbose >= 0) printf("Skipping %s\n", cfg_get_strg(cf_top, "image"));
+    ERROR_PRINTF("Skipping %s\n", cfg_get_strg(cf_top, "image"));
     return 0;
 }
 
@@ -1645,12 +1627,12 @@ void bsect_uninstall(char *boot_dev,char *backup_file,int validate)
 	die("Timestamp in boot sector of %s differs from date of %s\n"
 	  "Try using the -U option if you know what you're doing.",boot_dev ?
 	  boot_dev : dev.name,backup_file);
-    if (verbose > 0) printf("Reading old boot sector.\n");
+    WARN_PRINTF("Reading old boot sector.\n");
     if (read(bck_file,(char *) &bsect,PART_TABLE_OFFSET) != PART_TABLE_OFFSET)
 	die("read %s: %s",backup_file,strerror(errno));
     if (lseek(fd,0,SEEK_SET) < 0)
 	die("lseek %s: %s",boot_dev ? boot_dev : dev.name,strerror(errno));
-    if (verbose > 0) printf("Restoring old boot sector.\n");
+    WARN_PRINTF("Restoring old boot sector.\n");
     if (write(fd,(char *) &bsect,PART_TABLE_OFFSET) != PART_TABLE_OFFSET)
 	die("write %s: %s",boot_dev ? boot_dev : dev.name,strerror(errno));
     if (use_dev_close) dev_close(&dev);
@@ -1681,7 +1663,7 @@ void bsect_raid_update(char *boot_dev, unsigned int raid_offset,
 
 	bios = (raid_flags&FLAG_RAID_DEFEAT) ? bios_map : bios_boot;
 	if (!cfg_get_flag(cf_options, "static-bios-codes")) {
-	    if (verbose>=2) printf("Using s/n from device 0x%02X\n", bios);
+	    INFO_PRINTF("Using s/n from device 0x%02X\n", bios);
 	    bsect.par_1.map_serial_no = serial_no[bios - 0x80];
 	}
 

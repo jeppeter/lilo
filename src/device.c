@@ -33,6 +33,7 @@
 #include "cfg.h"
 #include "probe.h"
 #include "md-int.h"
+#include "debug.h"
 
 
 typedef struct _cache_entry {
@@ -88,7 +89,7 @@ static int scan_dir(ST_BUF *next,DEVICE *dev,char *parent,int number)
     ST_BUF st,*walk;
     char *start;
 
-    if (verbose >= 5) printf("scan_dir: %s\n", parent);
+    TRACE_PRINTF("scan_dir: %s\n", parent);
     st.next = next;
     if ((dp = opendir(parent)) == NULL)
     die("opendir %s: %s",parent,strerror(errno));
@@ -128,29 +129,11 @@ static int lookup_dev(char *name,DEVICE *dev,int number)
 {
     CACHE_ENTRY **walk;
 
-    if (verbose>=5) printf("lookup_dev:  number=%04X\n", number);
+    TRACE_PRINTF("lookup_dev:  number=%04X\n", number);
     for (walk = &cache; *walk; walk = &(*walk)->next)
 	if ((*walk)->number == number) {
-#if 0
-	    CACHE_ENTRY *here;
-
-	    if (stat((*walk)->name,&dev->st) >= 0)
-		if (S_ISBLK(dev->st.st_mode) && dev->st.st_rdev == number) {
-		    strcpy(name,(*walk)->name);
-		    return 1;
-		}
-	    here = *walk; /* remove entry from cache */
-	    if (verbose >= 2)
-		printf("Invalidating cache entry for %s (0x%04X)\n",here->name,
-		  here->number);
-	    *walk = here->next;
-	    free((char *) here->name);
-	    free(here);
-	    return 0;
-#else
 	    strcpy(name,(*walk)->name);
 	    return 1;
-#endif
 	}
     return 0;
 }
@@ -183,7 +166,7 @@ static void cache_add(const char *name,int number)
 	}
 	entry = entry->next;
     }
-    if (verbose >= 5) printf("Caching device %s (0x%04X)\n",name,number);
+    TRACE_PRINTF("Caching device %s (0x%04X)\n",name,number);
     entry = alloc_t(CACHE_ENTRY);
     entry->name = stralloc(name);
     entry->number = number;
@@ -223,14 +206,13 @@ int dev_open(DEVICE *dev,int number,int flags)
 		die("mknod %s: %s",name,strerror(errno));
 	    if (stat(name,&dev->st) < 0)
 		die("stat %s: %s",name,strerror(errno));
-	    if (verbose > 1)
-		printf("Created temporary device %s (0x%04X)\n",name,number);
+	    INFO_PRINTF("Created temporary device %s (0x%04X)\n",name,number);
 	    temp_register(name);
 	}
 	else cache_add(name,number);
     }
 #if BETA_TEST
-	if (verbose >= 4) printf("stat-ing %s\n", name);
+	DEBUG_PRINTF("stat-ing %s\n", name);
 	fflush(stdout);
 	stat(name, &st.st);
 #endif
@@ -253,8 +235,7 @@ void dev_close(DEVICE *dev)
     if (dev->fd != -1)
 	if (close(dev->fd) < 0) die("close %s: %s",dev->name,strerror(errno));
     if (dev->delete) {
-	if (verbose > 1)
-	    printf("Removed temporary device %s (0x%04X)\n",dev->name,
+	INFO_PRINTF("Removed temporary device %s (0x%04X)\n",dev->name,
 	      (unsigned int) dev->st.st_rdev);
 	(void) remove(dev->name);
 	temp_unregister(dev->name);
@@ -491,13 +472,11 @@ int make_backup(char *backup_file, int force_backup, BOOT_SECTOR *bsect,
 	bck_file = -1;
     }
     if (bck_file >= 0) {
-	if (verbose)
-	    printf("%s exists - no %s backup copy made.\n", backup_file, id);
+	WARN_PRINTF("%s exists - no %s backup copy made.\n", backup_file, id);
     }
     else {
     	if (dev_listed(device)) {
-	    if (verbose)
-		printf("Backup copy of %s has already been made in %s\n",
+		WARN_PRINTF("Backup copy of %s has already been made in %s\n",
 			id, backup_file);
     	}
     	else if (!test) {
@@ -505,15 +484,13 @@ int make_backup(char *backup_file, int force_backup, BOOT_SECTOR *bsect,
 		die("creat %s: %s",backup_file, strerror(errno));
 	    if (write(bck_file, (char *)bsect, SECTOR_SIZE) != SECTOR_SIZE)
 		die("write %s: %s", backup_file, strerror(errno));
-	    if (verbose)
-		printf("Backup copy of %s in %s\n", id, backup_file);
+	    WARN_PRINTF("Backup copy of %s in %s\n", id, backup_file);
 	    if (fstat(bck_file, &st) < 0)
 		die("fstat %s: %s",backup_file,strerror(errno));
 	    timestamp = st.st_mtime;
 	}
 	else {
-	    if (verbose)
-		printf("Backup copy of %s in %s (test mode)\n", id, backup_file);
+		WARN_PRINTF("Backup copy of %s in %s (test mode)\n", id, backup_file);
 	}
     }
     if (bck_file >= 0 && close(bck_file) < 0) die("close %s: %s",backup_file,strerror(errno));
@@ -564,7 +541,7 @@ static int inited = 0;
 	    && (fd = open(RANDOM, O_RDONLY)) > 0
 	    && read(fd, &random, sizeof(random)) == sizeof(random) )  {
 #if BETA_TEST
-if(verbose>=5) printf("Using " RANDOM " for seeding random number generator\n");	    
+	TRACE_PRINTF("Using " RANDOM " for seeding random number generator\n");	    
 #endif
 		close(fd);
 		inited ^= random;
@@ -613,10 +590,9 @@ unsigned int register_bios(int bios, int device)
 #endif
     if (!do_md_install && cfg_get_flag(cf_options, "static-bios-codes")) return 0;
     
-    if (verbose>=4) {
-	printf("registering bios=0x%02X  device=0x%04X\n", bios, device);
-    }
     
+    DEBUG_PRINTF("registering bios=0x%02X  device=0x%04X\n", bios, device);
+        
     disk_bios = bios;
     if (bios>=0x80 && bios<0x80+MAX_BIOS_DEVICES &&
 				(i=has_partitions(device))) {
@@ -642,8 +618,7 @@ unsigned int register_bios(int bios, int device)
 		*(int*)&buff.sector[PART_TABLE_OFFSET-6] = serial;
 		if (*(short*)&buff.sector[PART_TABLE_OFFSET - 2] == 0)
 		    *(unsigned short*)&buff.sector[PART_TABLE_OFFSET - 2] = MAGIC_SERIAL;
-		if (verbose)
-		    printf("Assigning new Volume ID to (%04X) '%s'  ID = %08X\n",
+		WARN_PRINTF("Assigning new Volume ID to (%04X) '%s'  ID = %08X\n",
 		    			device, dev.name, (int)serial);
 		if (!test) {
 		    i = lseek(fd, 0L, SEEK_SET);
@@ -674,9 +649,7 @@ unsigned int register_bios(int bios, int device)
 	    die("Bios device code 0x%02X is being used by two disks\n\t%s (0x%04X)  and  %s (0x%04X)",
 	    	bios|0x80, dev.name, device_code[bios], deva.name, device);
 	}
-	if (verbose>=3) {
-	    printf("Using Volume ID %08X on bios %02X\n", (int)serial, bios+0x80);
-	}
+	LOG_PRINTF("Using Volume ID %08X on bios %02X\n", (int)serial, bios+0x80);
     }
     else if (bios>=0 && bios <=3) serial = 0;
     else serial = -1;
@@ -795,7 +768,7 @@ static int is_mdp(struct VolumeMgmt *vm, struct VolumeMgmt *mdp)
     md_array_info_t raid;
     int ret=0;
 
-    if (verbose>=2) printf("is_mdp:   %04X : %04X\n",
+    INFO_PRINTF("is_mdp:   %04X : %04X\n",
           vm->device, mdp->device);
     
     if ((mdp_fd=dev_open(&dev, mdp->device, O_NOACCESS) ) < 0)
@@ -822,7 +795,7 @@ static int is_mdp(struct VolumeMgmt *vm, struct VolumeMgmt *mdp)
     /* else ret = 0;  already */
     dev_close(&dev);
 
-    if (verbose>=2) printf("is_mdp: returns %d\n", ret);
+    INFO_PRINTF("is_mdp: returns %d\n", ret);
     
     return ret;
 }
@@ -949,9 +922,9 @@ static int warned = 0, called = 0;
 	else name = next;
 	if (*name=='/') name++;
 	strncpy(name, DEV_DISK_DIR "/", strlen(DEV_DISK_DIR)+1);
-	if (verbose>=5) {
-	    printf("pf_hard_disk_scan: (%d,%d) %s\n", major, minor, name);
-	}
+	
+	TRACE_PRINTF("pf_hard_disk_scan: (%d,%d) %s\n", major, minor, name);
+	
 
 	device = MKDEV(major, minor);
 
@@ -1020,7 +993,7 @@ static int warned = 0, called = 0;
 		}
 #endif
 #if BETA_TEST
-		if (verbose>=3) printf("**ndevs=%d\n", ndevs);
+		LOG_PRINTF("**ndevs=%d\n", ndevs);
 #endif
 		if (ndevs>=MAX_DEVICES) {
 		    die("More than %d hard disks are listed in '" PARTITIONS "'.\n"
@@ -1043,8 +1016,7 @@ static int warned = 0, called = 0;
 		    
 		    vm[ndevs].name = stralloc(Dev2.name);
 
-		    if (verbose >= 4)
-			printf("pf:  dev=%04X  id=%08X  name=%s\n", dev, (int)serial, Dev2.name);
+		    DEBUG_PRINTF("pf:  dev=%04X  id=%08X  name=%s\n", dev, (int)serial, Dev2.name);
 
 		    for (walk = disktab; walk; walk = walk->next) {
 			if (walk->device == dev) {
@@ -1105,7 +1077,7 @@ static int warned = 0, called = 0;
 		    vm[found].flag |= NTCAUTION;
 		    vm[found].nt[ipart-1] = NTCAUTION;
 		    ntcaution++;
-		    if (verbose>=4) printf("NT partition: %s %d %s\n",
+		    DEBUG_PRINTF("NT partition: %s %d %s\n",
 		    			vm[found].name, ipart, name);
 		}
 	    }
@@ -1119,13 +1091,13 @@ static int warned = 0, called = 0;
 
 
 
-	if (verbose>=5) {
+	if (1) {
 	    int i;
 	    for (i=0; i<ndevs; i++)
-		printf("  %04X  %08X  %s\n", vm[i].device, vm[i].vol_id.kernel, vm[i].name);
+		TRACE_PRINTF("  %04X  %08X  %s\n", vm[i].device, vm[i].vol_id.kernel, vm[i].name);
 	}
 
-    if (verbose>=2) printf("pf_hard_disk_scan: ndevs=%d\n", ndevs);
+    INFO_PRINTF("pf_hard_disk_scan: ndevs=%d\n", ndevs);
 
 /* now sort the volumes into canonical order */
   {
@@ -1146,7 +1118,7 @@ static int warned = 0, called = 0;
       if (MAJOR(vm[k].device) == MAJOR_MDP  ||
           MAJOR(vm[k].device) == MAJOR_EMD   ) {
 
-        if (verbose>=2) printf("MDP-RAID detected,   k=%d\n", k);
+       INFO_PRINTF("MDP-RAID detected,   k=%d\n", k);
 	if (cfg_get_flag(cf_options, "noraid") ) {
 	    raidcaution = 1;
 	    warn("RAID controller present, with \"noraid\" keyword used.\n"
@@ -1170,7 +1142,7 @@ static int warned = 0, called = 0;
 			walk->next = disktab;
 			vm[j].dt = disktab = walk;
 #if BETA_TEST
-			if (verbose >= 4) printf("Allocated DT entry for device %04X  ptr=%08lx\n", vm[j].device, (long)walk);
+			DEBUG_PRINTF("Allocated DT entry for device %04X  ptr=%08lx\n", vm[j].device, (long)walk);
 #endif
 		    }
 
@@ -1211,7 +1183,7 @@ static int warned = 0, called = 0;
 #endif
 #ifdef LCF_ATARAID
       if ( MAJOR(vm[k].device) == MAJOR_DM ) {
-          if (verbose>=2) printf("ATA-RAID detected,   k=%d\n", k);
+          INFO_PRINTF("ATA-RAID detected,   k=%d\n", k);
           raidcaution = 1;
           warn("ATA-RAID controller present;\n"
               "    Underlying drives individually must be marked INACCESSIBLE." );
@@ -1220,10 +1192,10 @@ static int warned = 0, called = 0;
     } /* for (k ... */
   } /* end sort */
 
-	if (verbose>=3) {
+	if (1) {
 	    for (i=0; i<ndevs; i++)
-		printf("  %04X  %08X  %s\n", vm[i].device, vm[i].vol_id.kernel, vm[i].name);
-	    printf("Resolve invalid VolumeIDs\n");
+		LOG_PRINTF("  %04X  %08X  %s\n", vm[i].device, vm[i].vol_id.kernel, vm[i].name);
+	    LOG_PRINTF("Resolve invalid VolumeIDs\n");
 	}
 
 /* now go thru and resolve any invalid VolumeIDs */
@@ -1239,8 +1211,7 @@ static int warned = 0, called = 0;
 	vm[i].flag &= ~INVALID;
     }
 
-	if (verbose>=3)
-	    printf("Resolve duplicate VolumeIDs\n");
+	LOG_PRINTF("Resolve duplicate VolumeIDs\n");
     
 /* now check for duplicates */
 
@@ -1277,14 +1248,14 @@ static int warned = 0, called = 0;
 
 
 
-	if (verbose>=2) {
+	if (1) {
 	    for (i=0; i<ndevs; i++)
-		printf("  %04X  %08X  %s\n", vm[i].device, vm[i].vol_id.kernel, vm[i].name);
+		INFO_PRINTF("  %04X  %08X  %s\n", vm[i].device, vm[i].vol_id.kernel, vm[i].name);
 	}
 
 
 
-    if (verbose>=2) printf("device codes (user assigned pf) = %lX\n", codes);
+    INFO_PRINTF("device codes (user assigned pf) = %lX\n", codes);
 
 /* mark those BIOS codes that are already used in the disk=/bios= table */
 
@@ -1303,7 +1274,7 @@ static int warned = 0, called = 0;
 		    else if (vm[i].bios.user == bios+0x80) k = i;
 		}
 #if BETA_TEST
-		if (verbose>=3) printf("J=%d  K=%d\n", j, k);
+		LOG_PRINTF("J=%d  K=%d\n", j, k);
 #endif
 		if (j<0 && k>=0) {
 		    die("Devices %04X and %04X are assigned to BIOS 0x%02X",
@@ -1314,7 +1285,7 @@ static int warned = 0, called = 0;
 	}
     }
 
-    if (verbose>=2) printf("device codes (user assigned) = %lX\n", codes);
+    INFO_PRINTF("device codes (user assigned) = %lX\n", codes);
 
     for (i=0; i<ndevs; i++) {
 	bios = vm[i].bios.probe;
@@ -1327,7 +1298,7 @@ static int warned = 0, called = 0;
 	}
     }
 
-    if (verbose>=2) printf("device codes (BIOS assigned) = %lX\n", codes);
+    INFO_PRINTF("device codes (BIOS assigned) = %lX\n", codes);
 
     for (bios=i=0; i<ndevs; i++) {
 	int j;
@@ -1338,7 +1309,7 @@ static int warned = 0, called = 0;
 	    if (bios < MAX_BIOS_DEVICES) {
 		codes |= 1L<<bios;
 		vm[i].bios.actual = 0x80+bios;
-		if (verbose>=3) printf("Filling in '%s' = 0x%02X\n", vm[i].name, bios+0x80);
+		LOG_PRINTF("Filling in '%s' = 0x%02X\n", vm[i].name, bios+0x80);
 	    }
 	    else vm[i].bios.actual = -1;
 	}
@@ -1349,7 +1320,7 @@ static int warned = 0, called = 0;
 	    walk->next = disktab;
 	    vm[i].dt = disktab = walk;
 #if BETA_TEST
-	    if (verbose >= 4) printf("Allocated DT entry for device %04X  ptr=%08lx\n", vm[i].device, (long)walk);
+	  DEBUG_PRINTF("Allocated DT entry for device %04X  ptr=%08lx\n", vm[i].device, (long)walk);
 #endif
 	}
 	j = vm[i].dt->bios = vm[i].bios.actual;
@@ -1359,9 +1330,7 @@ static int warned = 0, called = 0;
 	    serial_no[j] = vm[i].vol_id.kernel;
 	    device_code[j] = vm[i].device;
 #if BETA_TEST
-	    if (verbose >= 5) {
-		printf("Generated: %02X  %04X  %08X\n", j+0x80, device_code[j], (int)serial_no[j]);
-	    }
+		TRACE_PRINTF("Generated: %02X  %04X  %08X\n", j+0x80, device_code[j], (int)serial_no[j]);
 #endif
 	}
 	else {
@@ -1379,7 +1348,7 @@ static int warned = 0, called = 0;
 	inited = 1;
     }
 
-    if (verbose>=2) printf("device codes (canonical) = %lX\n", codes);
+    INFO_PRINTF("device codes (canonical) = %lX\n", codes);
 
     for (bios=8*sizeof(codes)-1; !(codes&(1L<<bios)) && bios>=0; ) bios--;
 

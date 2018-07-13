@@ -31,6 +31,7 @@
 #include "cfg.h"
 #include "partition.h"
 #include "md-int.h"
+#include "debug.h"
 
 static int lowest;
 static DT_ENTRY *md_disk;
@@ -110,8 +111,7 @@ int raid_setup(void)
     }
     if (stat(boot,&st)<0) die("raid_setup: stat(\"%s\")", boot);
 
-    if (verbose>=5)
-	printf("raid_setup: dev=%04X  rdev=%04X\n",
+	TRACE_PRINTF("raid_setup: dev=%04X  rdev=%04X\n",
 				(int)st.st_dev, (int)st.st_rdev);
 
 #if BETA_TEST
@@ -144,7 +144,7 @@ int raid_setup(void)
 
 	if (ioctl(md_fd,RAID_VERSION,&md_version_info) < 0)
 	    die("Unable to get RAID version on %s", boot);
-        if (verbose >= 4) printf("RAID_VERSION = %d.%d\n",
+        DEBUG_PRINTF("RAID_VERSION = %d.%d\n",
                 (int)md_version_info.major,
                 (int)md_version_info.minor);
 	if (md_version_info.major > 0)
@@ -154,7 +154,7 @@ int raid_setup(void)
 	
 	if (ioctl(md_fd,GET_ARRAY_INFO,&md_array_info) < 0)
 	    die("Unable to get RAID info on %s",boot);
-        if (verbose >= 4) printf("GET_ARRAY_INFO version = %d.%d\n",
+        DEBUG_PRINTF("GET_ARRAY_INFO version = %d.%d\n",
                 (int)md_array_info.major_version,
                 (int)md_array_info.minor_version);
         if (md_version_info.major != 0 || md_version_info.minor != 90 ||
@@ -211,8 +211,8 @@ int raid_setup(void)
 	    disktab = md_disk;
 	}
 
-	if (verbose >= 2) {
-	   printf("RAID info:  nr=%d, raid=%d, active=%d, working=%d, failed=%d, spare=%d\n",
+	if (1) {
+	   INFO_PRINTF("RAID info:  nr=%d, raid=%d, active=%d, working=%d, failed=%d, spare=%d\n",
 		md_array_info.nr_disks,
 		md_array_info.raid_disks,
 		md_array_info.active_disks,
@@ -242,13 +242,9 @@ int raid_setup(void)
 #if 1
 		die("raid: GET_DISK_INFO: %s, pass=%d", strerror(errno), pass);
 #else
-		{
-		printf("raid: GET_DISK_INFO: %s, pass=%d\n", strerror(errno), pass);
-		continue;
-		}
 #endif
 	    device = MKDEV(md_disk_info.major, md_disk_info.minor);
-            if(verbose>=3) printf("md: RAIDset device %d = 0x%04X\n", pass, device);	    
+            LOG_PRINTF("md: RAIDset device %d = 0x%04X\n", pass, device);	    
 	    if (device == 0) { /* empty slot left over from recovery process */
 		faulty++;
 		warn("Faulty disk in RAID-1 array; boot with caution!!");
@@ -256,14 +252,13 @@ int raid_setup(void)
 	    }
 	    disk_fd = dev_open(&dev,device,O_NOACCESS);
 	    if (md_disk_info.state & (1 << MD_DISK_FAULTY)) {
-		printf("disk %s marked as faulty, skipping\n",dev.name);
+		ERROR_PRINTF("disk %s marked as faulty, skipping\n",dev.name);
 		faulty++;
 		continue;
 	    }
 	    geo_get(&geo, device, -1, 1);
 	    disk = alloc_t(DT_ENTRY);
-	    if (verbose>=3)
-		printf("RAID scan: geo_get: returns geo->device = 0x%02X"
+		LOG_PRINTF("RAID scan: geo_get: returns geo->device = 0x%02X"
 		      " for device %04X\n", geo.device, device);
 	      
 	    disk->bios = geo.device;	/* will be overwritten */
@@ -307,8 +302,8 @@ int raid_setup(void)
 	    disk->next = disktab;
 	    disktab = disk;
 
-	    if (verbose >= 3 && do_md_install) {
-		printf("disk->start = %d\t\traid_offset = %d (%08X)\n",
+	    if (1 && do_md_install) {
+		LOG_PRINTF("disk->start = %d\t\traid_offset = %d (%08X)\n",
 		   disk->start, (int)raid_offset[ndisk], (int)raid_offset[ndisk]);
 	    }
    	
@@ -383,7 +378,7 @@ int raid_setup(void)
 		    die("Unable to stat %s",scan);
 		if (!S_ISBLK(st.st_mode))
 		    die("%s (%04X) not a block device", scan, (int)st.st_rdev);
-		if (verbose>=4) printf("RAID list: %s is device 0x%04X\n",
+		DEBUG_PRINTF("RAID list: %s is device 0x%04X\n",
 				scan, (int)st.st_rdev);	    	
 		close(md_fd);
 		
@@ -402,7 +397,7 @@ int raid_setup(void)
 #ifdef FLAG_RAID_NOWRITE
 		    raid_flags |= FLAG_RAID_NOWRITE;  /* disk is outside RAID set */
 #endif
-		    if (!nowarn) printf("Warning: device outside of RAID set  %s  0x%04X\n", 
+		    if (!nowarn) WARN_PRINTF("Warning: device outside of RAID set  %s  0x%04X\n", 
 		    				scan, (int)st.st_rdev);
 		}
 		raid_list[nlist++] = stralloc(scan);
@@ -456,11 +451,9 @@ int raid_setup(void)
 	    disk = disk->next;		  /*  assigned the same bios code */
 	}
 #endif
-	if (verbose) {
-	    printf(
+	    WARN_PRINTF(
 	       "Using BIOS device code 0x%02X for RAID boot blocks\n",
 	    	                            md_disk->bios);
-	}
 
 #if 0
 	if ( mask &&  ( extra == X_NONE ||
@@ -495,13 +488,11 @@ void raid_final(void)
     else if ((cp=cfg_get_strg(cf_options,"force-backup"))) force=1;
     else cp=cfg_get_strg(cf_options,"backup");
 	    
-    if (verbose>=2) {
-	printf("do_md_install: %s\n", do_md_install == MD_PARALLEL ? "MD_PARALLEL" :
+	INFO_PRINTF("do_md_install: %s\n", do_md_install == MD_PARALLEL ? "MD_PARALLEL" :
 		do_md_install == MD_MIXED ? "MD_MIXED" :
 		do_md_install == MD_SKEWED ? "MD_SKEWED" : "unknown");
 	for (pass=0; pass<ndisk; pass++)
-	    printf("  offset %08X  %s\n", raid_offset[pass], raid_mbr[pass]);
-    }
+	    INFO_PRINTF("  offset %08X  %s\n", raid_offset[pass], raid_mbr[pass]);
     		
     if (extra == X_MBR_ONLY) {    
         pass = 0;
@@ -564,7 +555,7 @@ void raid_final(void)
 	    	index = lowest;
 	    }
 
-	    if (verbose>=3) printf("Specified partition:  %s  raid offset = %08X\n",
+	    LOG_PRINTF("Specified partition:  %s  raid offset = %08X\n",
 					raid_list[pass], raid_offset[index]);
 
 	    if (!test)
@@ -633,10 +624,10 @@ int raid_mask(int *offsets)
     }
     for (i=0; i<nelem(offset); i++) {
 	if ( (mask>>i) & 1 ) *offsets++ = offset[i];
-	if (do_md_install && verbose>=3) printf("RAID offset entry %d  0x%08X\n", offset[i], offset[i]);
+	if (do_md_install && 1) LOG_PRINTF("RAID offset entry %d  0x%08X\n", offset[i], offset[i]);
     }
     
-    if (verbose>=2) printf("RAID device mask 0x%04X\n", mask);
+    INFO_PRINTF("RAID device mask 0x%04X\n", mask);
     
     return mask;
 }

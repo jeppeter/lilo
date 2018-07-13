@@ -42,6 +42,7 @@
 #include "cfg.h"
 #include "md-int.h"
 #include "probe.h"
+#include "debug.h"
 
 #ifdef LCF_REISERFS
 #ifndef REISERFS_SUPER_MAGIC
@@ -202,9 +203,7 @@ void geo_init(char *name)
 	if (sscanf(line, "%d %31s\n", &major, major_name) != 2) continue;
 	if (strcmp(major_name, "device-mapper") != 0) continue;
 	dm_major_list[dm_major_nr] = major;
-	if (verbose >= 3) {
-	    printf("device-mapper major = %d\n", major);
-	}
+	LOG_PRINTF("device-mapper major = %d\n", major);
 	if (++dm_major_nr > nelem(dm_major_list) ) break;
     }
 
@@ -425,11 +424,9 @@ void do_disk(void)
     }
     entry->next = disktab;
     disktab = entry;
-    if (verbose >= 6) {
-	printf("do_disk: %s %04X 0x%02X  %d:%d:%d\n",
+  TRACE_PRINTF("do_disk: %s %04X 0x%02X  %d:%d:%d\n",
 		disk, entry->device, entry->bios, entry->cylinders,
 		entry->heads, entry->sectors);
-    }
     cfg_init(cf_partitions);
     (void) cfg_parse(cf_partitions);
     cfg_unset(cf_options,"disk");
@@ -605,7 +602,7 @@ void geo_query_dev(GEOMETRY *geo,int device,int all)
     struct floppy_struct fdprm;
     struct hd_geometry hdprm;
 
-    if (verbose>=5) printf("geo_query_dev: device=%04X\n", device);
+    TRACE_PRINTF("geo_query_dev: device=%04X\n", device);
     /* simplified condition -- JRC 2003-06-04 */
     get_all = all;
 
@@ -790,7 +787,7 @@ void geo_query_dev(GEOMETRY *geo,int device,int all)
 	    else die("Sorry, don't know how to handle device 0x%04x",device);
     }
     if (get_all) dev_close(&dev);
-    if (verbose>=5) printf("exit geo_query_dev\n");
+    TRACE_PRINTF("exit geo_query_dev\n");
 }
 
 
@@ -1048,7 +1045,7 @@ void geo_get(GEOMETRY *geo,int device,int user_device,int all)
     }
 #endif
 
-    if (verbose>=5) printf("geo_get: device %04X, all=%d\n", device, all);
+    TRACE_PRINTF("geo_get: device %04X, all=%d\n", device, all);
 #ifdef LCF_LVM
     /*
      * Find underlying device (PV) for LVM.  It is OK if the underlying PV is
@@ -1145,38 +1142,13 @@ void geo_get(GEOMETRY *geo,int device,int user_device,int all)
 	device = MKDEV(md_disk_info.major, md_disk_info.minor);
 
 #else		/* prior to 22.7 */
-{
-int pass;
-   	for (pass = 0; pass < raid_limit; pass++) {
-	    md_disk_info.number = pass;
-	    if (ioctl(md_fd,GET_DISK_INFO,&md_disk_info) < 0)
-#if BETA_TEST
-	    {
-		printf("(raid) GET_DISK_INFO: failed for pass=%d\n", pass);
-		continue;
-	    }
-#else
-	        die("GET_DISK_INFO: %s", mdxxx);
-#endif
-	    if (!(md_disk_info.state & (1 << MD_DISK_FAULTY))) {
-#if 1
-		is_raid = (device==boot_dev_nr);
-#else
-/* this change may be in error; the correct comparison is == */
-		is_raid = (device!=boot_dev_nr);
-#endif
-	        device = MKDEV(md_disk_info.major, md_disk_info.minor);
-		break;
-	    }
-	}
-}
 #endif	/* end of code prior to version 22.7 */
 
 	close(md_fd);
     }
 
 #if BETA_TEST
-	if (verbose>=5) printf("geo_get(2):  device=%04X, all=%d\n", device, all);
+	TRACE_PRINTF("geo_get(2):  device=%04X, all=%d\n", device, all);
 #endif
 
 /* if using hard disk, scan the devices in /proc/partitions */
@@ -1189,13 +1161,13 @@ int pass;
 	if (walk->device == device) break;
     inherited = !walk && !old_disktab;
 #if BETA_TEST
-    if (verbose>=5) printf("inherited=%d\n", inherited);
+    TRACE_PRINTF("inherited=%d\n", inherited);
 #endif
     if (inherited)
 	for (walk = disktab; walk; walk = walk->next)
 	    if (walk->device == (device & D_MASK(device))) break;
 #if BETA_TEST
-    if (verbose>=5) printf("walk=%08lx\n", (long)walk);
+    TRACE_PRINTF("walk=%08lx\n", (long)walk);
 #endif
 
 #if 1
@@ -1209,7 +1181,7 @@ int pass;
     keep_cyls = !walk || walk->bios == -1 || walk->heads == -1 ||
       walk->sectors == -1 || inherited || walk->start == -1;
 #if BETA_TEST
-    if (verbose>=5) printf("inherited=%d  keep_cyls=%d\n", inherited, keep_cyls);
+    TRACE_PRINTF("inherited=%d  keep_cyls=%d\n", inherited, keep_cyls);
 #endif
 
 #if 1
@@ -1238,8 +1210,7 @@ int pass;
     }
     if (user_device != -1) geo->device = user_device;
     if (!all) {
-	if (verbose > 2)
-	    printf("Device 0x%04x: BIOS drive 0x%02x, no geometry.\n",device,
+	LOG_PRINTF("Device 0x%04x: BIOS drive 0x%02x, no geometry.\n",device,
 	      geo->device);
 	return;
     }
@@ -1265,13 +1236,11 @@ int pass;
         "   Use of the 'lba32' option may help on newer (EDD-BIOS) systems.",
 	  device, BIOS_MAX_CYLS);
     }
-    if (verbose >= 3) {
-	printf("Device 0x%04x: BIOS drive 0x%02x, %d heads, %d cylinders,\n",
+	LOG_PRINTF("Device 0x%04x: BIOS drive 0x%02x, %d heads, %d cylinders,\n",
 	  device,geo->device,geo->heads,geo->cylinders == -1 ? BIOS_MAX_CYLS :
 	  geo->cylinders);
-	printf("%15s%d sectors. Partition offset: %d sectors.\n","",
+	LOG_PRINTF("%15s%d sectors. Partition offset: %d sectors.\n","",
 	  geo->sectors,geo->start);
-    }
     geo->raid = is_raid;
 
 /* make the serial number association */
@@ -1302,12 +1271,10 @@ int geo_open(GEOMETRY *geo,const char *name,int flags)
 	die("%s: neither a reg. file nor a block dev.",name);
     geo->dev = S_ISREG(st.st_mode) ? st.st_dev : st.st_rdev;
 #if BETA_TEST
-	if (verbose>=4) {
-		printf("geo_open: (%s) st_dev(file)=%04X  st_rdev(blk)=%04X\n",
+	DEBUG_PRINTF("geo_open: (%s) st_dev(file)=%04X  st_rdev(blk)=%04X\n",
 		name,
 		(int)st.st_dev,
 		(int)st.st_rdev );
-	}
 #endif
 
     geo_get(geo, geo->dev, user_dev, 1);
@@ -1337,7 +1304,7 @@ int geo_open_boot(GEOMETRY *geo,char *name)
 {
     struct stat st;
 
-    if (verbose>=5) printf("geo_open_boot: %s\n", name);
+    TRACE_PRINTF("geo_open_boot: %s\n", name);
     if (stat(name,&st) < 0) die("stat %s: %s",name,strerror(errno));
     if (!S_ISREG(st.st_mode) && !S_ISBLK(st.st_mode))
 	die("%s: neither a reg. file nor a block dev.",name);
@@ -1380,8 +1347,7 @@ int geo_comp_addr(GEOMETRY *geo,int offset,SECTOR_ADDR *addr)
     static int linear_warnings = 0;
 
 #if BETA_TEST
-    if (verbose>=6)
-	printf("geo_comp_addr: dev = %x, offset=%d\n",
+	TRACE_PRINTF("geo_comp_addr: dev = %x, offset=%d\n",
 		geo->device, offset);
 #endif
 
@@ -1400,13 +1366,13 @@ int geo_comp_addr(GEOMETRY *geo,int offset,SECTOR_ADDR *addr)
 	    if (buf.f_type == REISERFS_SUPER_MAGIC) {
 		if (ioctl (geo->fd, REISERFS_IOC_UNPACK, 1) == ENOSPC)
 			die("Cannot unpack ReiserFS file");
-		if (verbose > 3) printf("fd %d: REISERFS_IOC_UNPACK\n", geo->fd);
+		DEBUG_PRINTF("fd %d: REISERFS_IOC_UNPACK\n", geo->fd);
 	    }
         /* Forcing reiser4 to perform tail2extent converstion */
            if (buf.f_type == REISER4_SUPER_MAGIC) {
                if (ioctl (geo->fd, REISER4_IOC_UNPACK, 1) != 0)
                        die("Cannot unpack Reiser4 file");
-               if (verbose > 3) printf("fd %d: REISER4_IOC_UNPACK\n", geo->fd);
+               DEBUG_PRINTF("fd %d: REISER4_IOC_UNPACK\n", geo->fd);
 
            /* 
                As we may have the situation when extent will be included
@@ -1418,7 +1384,7 @@ int geo_comp_addr(GEOMETRY *geo,int offset,SECTOR_ADDR *addr)
 		if (fdatasync(geo->fd) != 0)
 		    die("Cannot perform fdatasync");
            
-		if (verbose > 3) printf("fd %d: fdatasync()\n", geo->fd);
+		DEBUG_PRINTF("fd %d: fdatasync()\n", geo->fd);
            }
 #endif
 	if (ioctl(geo->fd,FIBMAP,&block) < 0) pdie("ioctl FIBMAP");
@@ -1523,8 +1489,7 @@ int geo_comp_addr(GEOMETRY *geo,int offset,SECTOR_ADDR *addr)
 		die("Sector address %d too large for LINEAR"
 					" (try LBA32 instead).", sector);
 	}
-	if (verbose > 4)
-	    printf("fd %d: offset %d -> dev 0x%02x, %s %d\n",
+	TRACE_PRINTF("fd %d: offset %d -> dev 0x%02x, %s %d\n",
 		         geo->fd, offset, addr->device,
 		         lba32 ? "LBA" : "linear",
 		         sector);
@@ -1547,8 +1512,7 @@ int geo_comp_addr(GEOMETRY *geo,int offset,SECTOR_ADDR *addr)
 	if (sector >= geo->cylinders && geo->cylinders != -1)
 	    die("geo_comp_addr: Cylinder %d beyond end of media (%d)",sector,
 	      geo->cylinders);
-	if (verbose > 4)
-	    printf("fd %d: offset %d -> dev 0x%02x, head %d, track %d, sector %d\n",
+	TRACE_PRINTF("fd %d: offset %d -> dev 0x%02x, head %d, track %d, sector %d\n",
 	      geo->fd,offset,addr->device,addr->head,sector,addr->sector);
 	addr->track = sector & 255;
 	addr->sector |= (sector >> 8) << 6;
@@ -1566,13 +1530,11 @@ int geo_find(GEOMETRY *geo,SECTOR_ADDR addr)
     int i;
 
 #if DEBUG_NEW
-    if (verbose>=2) {
-	printf("Find:  AL=%02x  CX=%04x  DX=%04x  LBA=%d\n", (int)addr.num_sect,
+	INFO_PRINTF("Find:  AL=%02x  CX=%04x  DX=%04x  LBA=%d\n", (int)addr.num_sect,
 		addr.sector + (addr.track<<8),
 		addr.device + (addr.head<<8),
 		addr.sector + (addr.track<<8) + (addr.head<<16) +
 		(addr.device&(LBA32_FLAG|LBA32_NOCOUNT)?addr.num_sect<<24:0) );
-    }
 #endif
     if (fstat(geo->fd,&st) < 0) return 0;
     geo_get(geo,st.st_dev,-1,1);
@@ -1589,71 +1551,5 @@ int geo_find(GEOMETRY *geo,SECTOR_ADDR addr)
 
 
 #if 0
-int geo_devscan(int device)
-{
-    DT_ENTRY *walk;
-    unsigned int mask, codes = 0;
-    int bios;
-    int maxbios = 0;
-    
-    device &= D_MASK(device);
-
-/* mark those BIOS codes that are already used */
-    for (walk=disktab; walk; walk=walk->next) {
-	if (has_partitions(walk->device) && walk->bios != -1) {
-	    bios = walk->bios & 0x7F;
-	    if (bios >= 4*sizeof(codes) ) die("BIOS code %02X is too big (device %04X)", bios, device);
-	    codes |= 1 << bios;	
-	}
-    }
-
-    bios = -1;
-/* extract BIOS code of master device, or -1 */
-    for (walk=disktab; walk; walk=walk->next) {
-	if (device == walk->device) {
-	    bios = walk->bios;
-	}
-    }
-    if (bios > maxbios) maxbios = bios;
-
-/* if device has no BIOS code assigned, assign the next one */
-    if (bios == -1)
-	for (bios=0x80, mask=1; mask; mask<<=1, bios++)
-		if (!(mask&codes)) break;
-    
-    if (bios > DEV_MASK) die("geo_devscan:  ran out of device codes");
-    
-    for (walk=disktab; walk; walk=walk->next) {
-	if (device == walk->device) {
-	    if (walk->bios == -1) walk->bios = bios;
-	    else bios = walk->bios;
-	    break;
-	}
-    }
-    if (bios > maxbios) maxbios = bios;
-    
-    if (verbose >= 2) printf("geo_devscan:  maxbios = %02X\n", maxbios);
-    
-    if (walk) return maxbios;	/* there was an entry in the disktab */
-    
-    walk = alloc_t(DT_ENTRY);
-    walk->device = device;
-    walk->bios = bios;
-    walk->sectors = walk->heads = walk->cylinders = walk->start = -1;
-    walk->next = disktab;
-    disktab = walk;
-    if (verbose>=2)
-	printf("geo_devscan: arbitrary bios assignment  dev=%04X  bios=0x%02X\n",
-			device, bios);
-
-    for (walk=disktab; walk; walk=walk->next) {
-	if (device == (walk->device & D_MASK(walk->device))) {
-	    if (walk->bios != -1) walk->bios = bios;
-	}
-    }
-
-    return maxbios;
-}
-
 #endif
 

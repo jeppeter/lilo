@@ -19,6 +19,7 @@
 
 #include "lilo.h"
 #include "common.h"
+#include "debug.h"
 #if !__MSDOS__
 #include "geometry.h"
 #endif /* !__MSDOS__ */
@@ -92,8 +93,7 @@ void map_create(char *name)
     if (do_md_install) {
 	struct stat st;
 	if(fstat(map_file,&st)) die("map_create: cannot fstat map file");
-	if (verbose >= 2)
-	    printf("map_create:  boot=%04X  map=%04X\n", 
+	    INFO_PRINTF("map_create:  boot=%04X  map=%04X\n", 
 					boot_dev_nr, (int)st.st_dev);
 	if (boot_dev_nr != st.st_dev  &&  extra != X_MBR_ONLY) {
 	    die("map file must be on the boot RAID partition");
@@ -137,9 +137,9 @@ void map_descrs(DESCR_SECTORS *descr, SECTOR_ADDR* addr, SECTOR_ADDR* dflcmd)
     if (!geo_comp_addr(&map_geo,0,dflcmd))
 	die("Hole found in map file (default command line)");
 
-    if (verbose >= 2) {
+    if (1) {
 	if (fstat(map_file,&st) < 0) pdie("fstat map file");
-	printf("Map file size: %d bytes.\n",(int) st.st_size);
+	DEBUG_PRINTF("Map file size: %d bytes.\n",(int) st.st_size);
     }
     if (last!=lseek(map_file, last, SEEK_SET)) pdie("lseek map file to end");
 }
@@ -200,7 +200,7 @@ void map_add(GEOMETRY *geo,int from,int num_sect)
 	    map_register(&addr);
 	else {
 	    map_register(&zero_addr);
-	    if (verbose > 3) printf("Covering hole at sector %d.\n",count);
+	    LOG_PRINTF("Covering hole at sector %d.\n",count);
 	}
     }
 }
@@ -270,8 +270,7 @@ static void map_compact(int dont_compact)
 	    walk->next = next;
 	}
     }
-    if (verbose > 1)
-	printf("Compaction removed %d BIOS call%s.\n",removed,removed == 1 ?
+	LOG_PRINTF("Compaction removed %d BIOS call%s.\n",removed,removed == 1 ?
 	  "" : "s");
 }
 
@@ -304,16 +303,16 @@ int map_end_section(SECTOR_ADDR *addr,int dont_compact)
     hinib = 0;
     for (walk = map; walk; walk = next) {
 	next = walk->next;
-	if (verbose > 3) {
+	if (1) {
 	    if ((walk->addr.device&LBA32_FLAG) && (walk->addr.device&LBA32_NOCOUNT)) hinib = walk->addr.num_sect;
-	    printf("  Mapped AL=0x%02x CX=0x%04x DX=0x%04x",walk->addr.num_sect,
+	    DEBUG_PRINTF("  Mapped AL=0x%02x CX=0x%04x DX=0x%04x",walk->addr.num_sect,
 	      (walk->addr.track << 8) | walk->addr.sector,(walk->addr.head << 8)
 	      | walk->addr.device);
 	    if (linear||lba32)
-		printf(", %s=%d",
+		DEBUG_PRINTF(", %s=%d",
 		  lba32 ? "LBA" : "linear",
 		  (walk->addr.head << 16) | (walk->addr.track << 8) | walk->addr.sector | hinib<<24);
-	    printf("\n");
+	    DEBUG_PRINTF("\n");
 	}
 	if (first) {
 	    first = 0;
@@ -425,7 +424,7 @@ off_t map_insert_file(GEOMETRY *geo, int skip, int sectors)
     int count, i;
     char buff[SECTOR_SIZE];
     
-    if (verbose>0) printf("Calling map_insert_file\n");
+    WARN_PRINTF("Calling map_insert_file\n");
     if (lseek(geo->fd, (off_t)skip*SECTOR_SIZE, SEEK_SET)<0)
 	pdie("map_insert_file: file seek");
     here = lseek(map_file, 0, SEEK_CUR);
@@ -450,7 +449,7 @@ off_t map_insert_data(unsigned char *data, int size)
     int count, sectors = 0;
     char buff[SECTOR_SIZE];
     
-    if (verbose>0) printf("Calling map_insert_data\n");
+    WARN_PRINTF("Calling map_insert_data\n");
     here = lseek(map_file, 0, SEEK_CUR);
 
     while (size) {

@@ -30,6 +30,7 @@
 #include "partition.h"
 #include "boot.h"
 #include "loader.h"
+#include "debug.h"
 
 #if __GLIBC__ < 2 || __GLIBC_MINOR__ < 1
 #if defined(_syscall5) && defined(__NR__llseek)
@@ -132,7 +133,7 @@ if ( !(do_md_install && extra==X_MBR_ONLY) ) {
     close(fd);
 
 } /* raid install with X_MBR_ONLY in use */
-    if (verbose>=6) printf("part_nowrite: %d\n", ret);    
+    TRACE_PRINTF("part_nowrite: %d\n", ret);    
     
     return ret;
 }
@@ -156,7 +157,7 @@ void part_verify(int dev_nr,int type)
 #endif
      	) return;
 
-    if (verbose >= 4) printf("part_verify:  dev_nr=%04x, type=%d\n", dev_nr, type);
+    DEBUG_PRINTF("part_verify:  dev_nr=%04x, type=%d\n", dev_nr, type);
     geo_get(&geo,dev_nr & ~mask,-1,1);
     fd = dev_open(&dev,dev_nr & ~mask,cfg_get_flag(cf_options,"fix-table")
       && !test ? O_RDWR : O_RDONLY);
@@ -176,7 +177,7 @@ void part_verify(int dev_nr,int type)
     if ( read(fd, &boot_sig, sizeof(boot_sig)) != sizeof(boot_sig)  ||
 	boot_sig != BOOT_SIGNATURE ) die("read boot signature failed");
 
-    if (verbose>=5) printf("part_verify:  part#=%d\n", pe);
+    TRACE_PRINTF("part_verify:  part#=%d\n", pe);
 
     second=base=0;
     for (i=0; i<PART_MAX; i++) {
@@ -274,8 +275,7 @@ void part_verify(int dev_nr,int type)
 	    if (size < 0) pdie(backup_file);
 	    if (close(bck_file) < 0)
 		die("close %s: %s",backup_file,strerror(errno));
-	    if (verbose > 0)
-		printf("Backup copy of partition table in %s\n",backup_file);
+		WARN_PRINTF("Backup copy of partition table in %s\n",backup_file);
 	    printf("Writing modified partition table to device 0x%04X\n",
 	      dev_nr & ~mask);
 	    if (lseek(fd,PART_TABLE_OFFSET,SEEK_SET) < 0)
@@ -377,8 +377,7 @@ static void add_rule(unsigned char bios,unsigned char offset,
 
     if (curr_prt_map == PRTMAP_SIZE)
 	cfg_error("Too many change rules (more than %d)",PRTMAP_SIZE);
-    if (verbose >= 3)
-	printf("  Adding rule: disk 0x%02x, offset 0x%x, 0x%02x -> 0x%02x\n",
+	LOG_PRINTF("  Adding rule: disk 0x%02x, offset 0x%x, 0x%02x -> 0x%02x\n",
 	    bios,PART_TABLE_OFFSET+offset,expect,set);
     prt_map[curr_prt_map] = (set << 24) | (expect << 16) | (offset << 8) | bios;
     for (i = 0; i < curr_prt_map; i++) {
@@ -422,7 +421,7 @@ void do_cr_auto(void)
     if (autoauto) has_partition = 0;
     other = identify ? cfg_get_strg(cf_identify, "other")
 		     : cfg_get_strg(cf_top, "other");
-    if (verbose > 4) printf("do_cr_auto: other=%s has_partition=%d\n",
+    TRACE_PRINTF("do_cr_auto: other=%s has_partition=%d\n",
         other, has_partition);
 #if 0
     i = other[strlen(other)-1] - '0';
@@ -452,7 +451,7 @@ void do_cr_auto(void)
 	die("Cannot read Partition Table of %s", table);
     close(pfd);
     partition = other[strlen(other)-1] - '0';
-    if (verbose > 3) printf("partition = %d\n", partition);
+    DEBUG_PRINTF("partition = %d\n", partition);
     for (j=i=0; i<PART_MAX; i++)
 	if (may_change(part_table[i].sys_ind)) j++;
 
@@ -581,7 +580,7 @@ void do_activate(char *part, char *which)
     
     part_max = read_partitions(part, extended_pt ? PART_MAX_MAX : 0,
     					NULL, pt, daddr);
-/*    printf("part_max=%d\n", part_max); */
+
     if (!which) {	/* one argument: display active partition */
 	for (count=0; count < part_max; count++) {
 	    if (pt[count].boot_ind) {
@@ -619,50 +618,6 @@ void do_activate(char *part, char *which)
     else
 	printf("No partition table modifications are needed.\n");
 #else
-    struct stat st;
-    int fd,number,count;
-    unsigned char flag, ptype;
-
-    if ((fd = open(part, !which ? O_RDONLY : O_RDWR)) < 0)
-	die("open %s: %s",part,strerror(errno));
-    if (fstat(fd,&st) < 0) die("stat %s: %s",part,strerror(errno));
-    if (!S_ISBLK(st.st_mode)) die("%s: not a block device",part);
-    if (verbose >= 1) {
-       printf("st.st_dev = %04X, st.st_rdev = %04X\n",
-       				(int)st.st_dev, (int)st.st_rdev);
-    }
-    if ((st.st_rdev & has_partitions(st.st_rdev)) != st.st_rdev)
-        die("%s is not a master device with a primary partition table", part);
-    if (!which) {	/* one argument: display active partition */
-	for (count = 1; count <= PART_NUM; count++) {
-	    if (lseek(fd,PART_BEGIN+(count-1)*PART_SIZE,SEEK_SET) < 0)
-		die("lseek: %s",strerror(errno));
-	    if (read(fd,&flag,1) != 1) die("read: %s",strerror(errno));
-	    if (flag == PART_ACTIVE) {
-		printf("%s%d\n",part,count);
-		exit(0);
-	    }
-	}
-	die("No active partition found on %s",part);
-    }
-    number = to_number(which);
-    if (number < 0 || number > 4)
-	die("%s: not a valid partition number (1-4)",which);
-    for (count = 1; count <= PART_NUM; count++) {
-	if (lseek(fd,PART_BEGIN+(count-1)*PART_SIZE+4,SEEK_SET) < 0)
-	    die("lseek: %s",strerror(errno));
-	if (read(fd,&ptype,1) != 1) die("read: %s",strerror(errno));
-	if (count == number && ptype==0) die("Cannot activate an empty partition");
-    }
-    if (test) {
-        printf("The partition table of  %s  has *NOT* been updated\n",part);
-    }
-    else for (count = 1; count <= PART_NUM; count++) {
-	if (lseek(fd,PART_BEGIN+(count-1)*PART_SIZE,SEEK_SET) < 0)
-	    die("lseek: %s",strerror(errno));
-	flag = count == number ? PART_ACTIVE : PART_INACTIVE;
-	if (write(fd,&flag,1) != 1) die("write: %s",strerror(errno));
-    }
 #endif
     exit(0);
 }
@@ -770,9 +725,9 @@ int read_partitions(char *part, int max, int *volid,
 	if (lseek(fd, MAX_BOOT_SIZE+2, SEEK_SET)<0) die("lseek vol-ID failed");
 	if (read(fd, volid, sizeof(*volid)) != sizeof(*volid))
 	    die("read vol-ID failed");
-/*	printf(" vol-ID: %08X\n", second);	*/
+
     }
-/*    printf("%s\n", phead); */
+
     second=base=0;
     if (max>=4)
     for (i=0; i<PART_MAX; i++) {

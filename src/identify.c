@@ -18,6 +18,7 @@
 #include "lilo.h"
 #include "common.h"
 #include "cfg.h"
+#include "debug.h"
 
 char *identify;
 static char *opt;
@@ -55,13 +56,13 @@ static void do_identify(char *var,char type)
     alias = cfg_get_strg(cf_all,"alias");
     dtem = cfg_get_strg(cf_options,"default");
 
-    if (verbose>=2) printf("identify: dtem=%s  label=%s\n", dtem, label);
+    INFO_PRINTF("identify: dtem=%s  label=%s\n", dtem, label);
 #ifdef LCF_IGNORECASE
     if (dtem && (!strcasecmp(label,dtem) || (alias && !strcasecmp(alias,dtem)))) {
 #else
     if (dtem && (!strcmp(label,dtem) || (alias && !strcmp(alias,dtem)))) {
 #endif
-	if (verbose>=2) printf("setting  dflt\n");
+	INFO_PRINTF("setting  dflt\n");
 	dflt = dtem;
     }
 
@@ -120,7 +121,7 @@ void identify_image(char *label,char *options)
 {
     identify = label;
     opt = options;
-    if (verbose>=2) printf("identify_image: id='%s' opt='%s'\n", label, options);
+    INFO_PRINTF("identify_image: id='%s' opt='%s'\n", label, options);
     idefault = !!strchr(opt,'D');
     if (idefault) identify = "";
     cfg_init(cf_identify);

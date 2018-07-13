@@ -31,6 +31,7 @@
 #include "partition.h"
 #include "boot.h"
 #include "loader.h"
+#include "debug.h"
 
 /*
  * The number of sectors between the 15M memory hole and 1M
@@ -60,10 +61,10 @@ void boot_image(char *spec,IMAGE_DESCR *descr)
 	int setup,fd,sectors,hi_sectors=MAX_KERNEL_SECS*4;
 	int modern_kernel;
 
-	if (verbose > 0) {
-		printf("Boot image: %s",spec);
+	if (1) {
+		WARN_PRINTF("Boot image: %s",spec);
 		show_link(spec);	/* in common.c */
-		printf("\n");
+		WARN_PRINTF("\n");
     }
 	fd = geo_open(&geo,spec,O_RDONLY);
 	if (fstat(fd,&st) < 0)  die("fstat %s: %s",spec,strerror(errno));
@@ -75,8 +76,7 @@ void boot_image(char *spec,IMAGE_DESCR *descr)
     modern_kernel = !strncmp(hdr.signature,NEW_HDR_SIG,4) && hdr.version >= 
 		NEW_HDR_VERSION;
 	if (modern_kernel) descr->flags |= FLAG_MODKRN;
-	if (verbose > 1)
-		printf("Setup length is %d sector%s.\n",setup,setup == 1 ? "" : "s");
+	WARN_PRINTF("Setup length is %d sector%s.\n",setup,setup == 1 ? "" : "s");
 	if (setup > MAX_SETUPSECS)
 		die("Setup length exceeds %d maximum; kernel setup will overwrite boot loader", MAX_SETUPSECS);
 	map_add(&geo,0,(st.st_size+SECTOR_SIZE-1)/SECTOR_SIZE);
@@ -93,15 +93,14 @@ void boot_image(char *spec,IMAGE_DESCR *descr)
     }
     geo_close(&geo);
 
-    if (verbose > 1)
-	printf("Mapped %d sector%s.\n",sectors,sectors == 1 ? "" : "s");
+    INFO_PRINTF("Mapped %d sector%s.\n",sectors,sectors == 1 ? "" : "s");
     if ((initrd = cfg_get_strg(cf_kernel,"initrd")) || (initrd = cfg_get_strg(
       cf_options,"initrd"))) {
 	if (!modern_kernel) die("Kernel doesn't support initial RAM disks");
-	if (verbose > 0) {
-	    printf("Mapping RAM disk %s",initrd);
+	if (1) {
+	    WARN_PRINTF("Mapping RAM disk %s",initrd);
 	    show_link(initrd);
-	    printf("\n");
+	    WARN_PRINTF("\n");
 	}
 	fd = geo_open(&geo,initrd,O_RDONLY);
 	if (fstat(fd,&st) < 0) die("fstat %s: %s",initrd,strerror(errno));
@@ -113,8 +112,7 @@ void boot_image(char *spec,IMAGE_DESCR *descr)
 	map_begin_section();
 	map_add(&geo,0,(st.st_size+SECTOR_SIZE-1)/SECTOR_SIZE);
 	sectors = map_end_section(&descr->initrd,0);
-	if (verbose > 1)
-		printf("RAM disk: %d sector%s.\n",sectors,sectors == 1 ?  "" : "s");
+	INFO_PRINTF("RAM disk: %d sector%s.\n",sectors,sectors == 1 ?  "" : "s");
 
 #ifdef LCF_INITRDLOW
 	if (hi_sectors + sectors > HIGH_SECTORS) {
@@ -125,8 +123,7 @@ void boot_image(char *spec,IMAGE_DESCR *descr)
 	if (cfg_get_flag(cf_options,"large-memory")
 			&& !cfg_get_flag(cf_options,"small-memory")) {
 		/* CASE 10 = large & not small */
-		if (verbose>=2)
-		printf("The initial RAM disk will be loaded in the high memory above 16M.\n");
+		INFO_PRINTF("The initial RAM disk will be loaded in the high memory above 16M.\n");
 	} else if (hi_sectors + sectors > HIGH_SECTORS) {
 		descr->flags |= FLAG_TOOBIG;
 		if (cfg_get_flag(cf_options,"small-memory")) {
@@ -136,13 +133,11 @@ void boot_image(char *spec,IMAGE_DESCR *descr)
 				"  assumed that the BIOS supports memory moves above 16M.");
 		} else {
 			/* CASE 00 = !large & !small */
-			if (verbose>=1)
-			printf("The initial RAM disk will be loaded in the high memory above 16M.\n");
+			WARN_PRINTF("The initial RAM disk will be loaded in the high memory above 16M.\n");
 		}
 	} else {
 		/* CASE 01 or 10 or 11 */
-		if (verbose>=2)
-		printf("The initial RAM disk will be loaded in the low memory below 15M.\n");
+		INFO_PRINTF("The initial RAM disk will be loaded in the low memory below 15M.\n");
 	}
 #endif	
 
@@ -157,7 +152,7 @@ void boot_device(char *spec,char *range,IMAGE_DESCR *descr)
     int start,secs;
     int sectors;
 
-    if (verbose > 0) printf("Boot device: %s, range %s\n",spec,range);
+    WARN_PRINTF("Boot device: %s, range %s\n",spec,range);
     (void) geo_open(&geo,spec,O_NOACCESS);
     here = strchr(range,'-');
     if (here) {
@@ -181,8 +176,7 @@ void boot_device(char *spec,char *range,IMAGE_DESCR *descr)
     check_size(spec,SETUPSECS,sectors = map_end_section(&descr->start,60));
 				/* this is a crude hack ... ----------^^*/
     geo_close(&geo);
-    if (verbose > 1)
-	printf("Mapped %d sector%s.\n",sectors,sectors == 1 ? "" : "s");
+    INFO_PRINTF("Mapped %d sector%s.\n",sectors,sectors == 1 ? "" : "s");
 }
 
 
@@ -215,8 +209,7 @@ void do_map_drive(void)
 	}
 	if (curr_drv_map == DRVMAP_SIZE)
 	    cfg_error("Too many drive mappings (more than %d)",DRVMAP_SIZE);
-	if (verbose > 1)
-	    printf("  Mapping BIOS drive 0x%02x to 0x%02x\n",from,to);
+	INFO_PRINTF("  Mapping BIOS drive 0x%02x to 0x%02x\n",from,to);
 	drv_map[curr_drv_map++] = (to << 8) | from;
     }
     cfg_unset(cf_other,"map-drive");
@@ -295,10 +288,8 @@ char *boot_mbr(const char *boot, int table)
     
 
 #endif
-    if (verbose>=3) {
-        printf("Name: %s  yields MBR: %s  (with%s primary partition check)\n",
+     LOG_PRINTF("Name: %s  yields MBR: %s  (with%s primary partition check)\n",
            boot, k ? npart : "(NULL)", table ? "" : "out");
-    }
 
     if (k) return npart;
     else return NULL;
@@ -353,21 +344,21 @@ void boot_other(char *loader,char *boot,char *part,IMAGE_DESCR *descr)
     if (!part && !unsafe) part = boot_mbr(boot, 1);
     /* part may still be NULL */
 
-    if (verbose > 0) {
+    if (1) {
 #ifdef LCF_BUILTIN
-	printf("Boot other: %s%s%s, loader %s\n",
+	WARN_PRINTF("Boot other: %s%s%s, loader %s\n",
 		boot,
 		part ? ", on " : "",
 		part ? part : "",
 		cname);
 #else
-	printf("Boot other: %s%s%s, loader %s",
+	WARN_PRINTF("Boot other: %s%s%s, loader %s",
 		boot,
 		part ? ", on " : "",
 		part ? part : "",
 		loader);
 	show_link(loader);
-	printf("\n");
+	WARN_PRINTF("\n");
 #endif
     }
 
@@ -435,11 +426,11 @@ void boot_other(char *loader,char *boot,char *part,IMAGE_DESCR *descr)
 	curr_drv_map += 2;	/* add 2 spaces */
 	if (curr_drv_map >= DRVMAP_SIZE)
 	    cfg_error("Too many drive mappings (more than %d)",DRVMAP_SIZE);
-	if (verbose > 1) {
+	if (1) {
 	    char *s, n[8];
 	    if (code==-1) s = "0/0x80";
 	    else sprintf((s=n),"0x%02x", code);
-	    printf("  Swapping BIOS boot drive with %s, as needed\n", s);
+	    INFO_PRINTF("  Swapping BIOS boot drive with %s, as needed\n", s);
 	}
 	for (i=curr_drv_map-1; i>1; i--) drv_map[i] = drv_map[i-2];
 	drv_map[0] = 0xFFFF;	/* reserve 2 slots */
@@ -468,7 +459,7 @@ void boot_other(char *loader,char *boot,char *part,IMAGE_DESCR *descr)
         p_fd = -1; /* pacify GCC */
         PART(buff,0).boot_ind = geo.device;
         PART(buff,0).start_sect = geo.start;     /* pseudo partition table */
-        if (verbose > 0) printf("Pseudo partition start: %d\n", geo.start);
+        WARN_PRINTF("Pseudo partition start: %d\n", geo.start);
     }
     else {
 	if ((p_fd = open(part,O_RDONLY)) < 0)
@@ -505,7 +496,7 @@ void boot_other(char *loader,char *boot,char *part,IMAGE_DESCR *descr)
     buff[0].par_c.drive = geo.device;
     buff[0].par_c.head = letter ? letter : geo.device;
      		/* IBM boot manager passes drive letter in offset 0x25 */
-    if (verbose>=5) printf("boot_other:  drive=0x%02x   logical=0x%02x\n",
+    TRACE_PRINTF("boot_other:  drive=0x%02x   logical=0x%02x\n",
     			buff[0].par_c.drive, buff[0].par_c.head);
     drv_map[curr_drv_map] = 0;
     prt_map[curr_prt_map] = 0;
@@ -534,15 +525,13 @@ void boot_other(char *loader,char *boot,char *part,IMAGE_DESCR *descr)
     (void) map_end_section(&descr->start,SETUPSECS+SPECIAL_SECTORS);
 	/* size is known */
     geo_close(&geo);
-    if (verbose > 1)
-	printf("Mapped %d (%d+1+1) sectors.\n",
+	INFO_PRINTF("Mapped %d (%d+1+1) sectors.\n",
 		SETUPSECS+SPECIAL_SECTORS, SETUPSECS);
 #else
     (void) map_end_section(&descr->start, mapped+SPECIAL_SECTORS+SPECIAL_BOOTSECT);
 	/* size is known */
     geo_close(&geo);
-    if (verbose > 1)
-	printf("Mapped %d (%d+1+1) sectors.\n",
+	INFO_PRINTF("Mapped %d (%d+1+1) sectors.\n",
 		mapped+SPECIAL_SECTORS, mapped);
 #endif
 }

@@ -31,6 +31,7 @@
 #include "bsect.h"
 #include "bdata.h"
 #include "probe.h"
+#include "debug.h"
 
 
 #ifdef LCF_BDATA
@@ -210,7 +211,7 @@ int fetch(void)
 	if (buf.s5.vid > 2) v3 = (void*)(v25 + 1);
     }
 #if BETA_TEST
-	if (verbose>=5) printf("fetch: good return\n");
+	TRACE_PRINTF("fetch: good return\n");
 #endif    
     return buf_valid=0;
 }
@@ -221,10 +222,8 @@ int purge(void)
     int i, fd;
     int seek = PROBESEG*16;
     
-    if (verbose>=6) printf("purge: called\n");
-#if 0
-    if (verbose>=6) {fetch(); dirty=1;}		/* test of checksumming */
-#endif
+    TRACE_PRINTF("purge: called\n");
+
     if (dirty <= 0) return 0;		/* nothing to purge */
     
     if ((i=fetch())) return i;	/* return error from fetch */
@@ -238,7 +237,7 @@ int purge(void)
     if (write(fd, &buf.b, i) != i) pdie("purge: ");
     close(fd);
     
-    if (verbose>=6) printf("purge: successful write\n");
+    TRACE_PRINTF("purge: successful write\n");
     
     return dirty = 0;			/* buffer is unmodified */
 }
@@ -315,10 +314,6 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
     int hd_err = 0;
 
 #if 0
-    if((i=fetch())) {
-        printf("No drive geometry information is available.\n\n");
-        exit(0);
-    }
 #else
     if (notice(4)) exit(0);
 #endif
@@ -453,7 +448,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
 
 	      if ((dp->info) & EDD_PARAM_GEOM_VALID) {
 	         if ((geom->n_sect != dp->sectors || geom->n_head != dp->heads) &&
-				((verbose>0 && !lba32) || verbose>=4) && 
+				((verbose>0 && !lba32) || 1) && 
 				!(warned[drive-0x80]&1) ) {
 	                warn("Int 0x13 function 8 and function 0x48 return different\n"
                 	               "head/sector geometries for BIOS drive 0x%02X", drive);
@@ -691,9 +686,9 @@ static void do_table(char *part)
 	print_pt(i+1, pt[i]);
 	i++;
     }
-    if (verbose>=5) {
-    	printf("\n");
-    	for (i=0; i<j; i++) printf("%4d%20lld%12d\n", i+1, where[i], (int)(where[i]/SECTOR_SIZE));
+    if (1) {
+    	TRACE_PRINTF("\n");
+    	for (i=0; i<j; i++) TRACE_PRINTF("%4d%20lld%12d\n", i+1, where[i], (int)(where[i]/SECTOR_SIZE));
     }
 }
 
@@ -731,8 +726,7 @@ int get_video(void)	/* return -1 on error, or adapter type [0..7] */
     if ((okay=buf.s5.vid)) {
     /* get current video mode */
     /* reg.eax = 0x0F00;		*/
-	if (verbose >= 6)
-	    printf("get video mode\n");
+	TRACE_PRINTF("get video mode\n");
 	mode = v1->vid0F.al;
 	col = v1->vid0F.ah;
 	page = v1->vid0F.bh;
@@ -750,8 +744,7 @@ int get_video(void)	/* return -1 on error, or adapter type [0..7] */
     /* determine video adapter type */
     /*    reg.eax = 0x1200;	  call valid on EGA/VGA */
     /*    reg.ebx = 0xFF10;				*/
-	if (verbose >= 6)
-	    printf("determine adapter type\n");
+	TRACE_PRINTF("determine adapter type\n");
 	if ((unsigned)(monitor = v2->vid12.bh) <= 1U)  {
     	    adapter = 3; /* at least EGA */
 	    egamem = v2->vid12.bl;
@@ -763,8 +756,7 @@ int get_video(void)	/* return -1 on error, or adapter type [0..7] */
     if (okay>=2) {
 	/* check for VGA */
     	/* reg.eax = 0x1A00;	   get display combination */
-    	if (verbose >= 6)
-	    printf("get display combination\n");
+    	TRACE_PRINTF("get display combination\n");
 	if ( v2->vid1A.al==0x1A ) {
     	    monitor = (v2->vid1A.bx >> ((verbose>=9)*8) ) & 0xFF;
     	    switch (monitor) {
@@ -793,8 +785,8 @@ int get_video(void)	/* return -1 on error, or adapter type [0..7] */
     }
     if (okay>=3 && adapter==5) {
 	/* check for BIOS bug (trashing DX) */
-    	if (v25 && verbose >= 6)
-	    printf("check Enable Screen Refresh\n");
+    	if (v25 )
+	    TRACE_PRINTF("check Enable Screen Refresh\n");
 	if (v25) {
 	    video_36_bug = 2;	/* mark implemented */
 	    
@@ -807,8 +799,7 @@ int get_video(void)	/* return -1 on error, or adapter type [0..7] */
 	}
 	
 	/* check for VESA extensions */
-    	if (verbose >= 6)
-	    printf("check VESA present\n");
+	TRACE_PRINTF("check VESA present\n");
 	    
 	if ((v3->vid4F00.ax == 0x4f) && strncmp("VESA", v3->vid4F00.sig, 4)==0)  adapter++;
 	
@@ -825,8 +816,7 @@ int get_video(void)	/* return -1 on error, or adapter type [0..7] */
 	    else adapter--;
 	}
     }
-    if (verbose>=2)
-    	printf ("mode = 0x%02x,  columns = %d,  rows = %d,  page = %d\n",
+    INFO_PRINTF("mode = 0x%02x,  columns = %d,  rows = %d,  page = %d\n",
     		       mode, col, row, page);
     
     return adapter;
@@ -880,7 +870,6 @@ void probe_tell (char *cmd)
     int n;
     char *arg;
     
-    if (!(verbose>0)) printf("\n");
     for (; pr->cmd; pr++) {
 	n = strlen(pr->cmd);
 	arg = NULL;
@@ -944,7 +933,7 @@ int bios_device(GEOMETRY *geo, int device)
         
     if (fetch()) return -1;
     
-    if (verbose>=5) printf("bios_dev:  device %04X\n", device);
+    TRACE_PRINTF("bios_dev:  device %04X\n", device);
 #ifdef DEBUG_PROBE
 	fflush(stdout);
 #endif    
@@ -963,14 +952,14 @@ int bios_device(GEOMETRY *geo, int device)
 	}
     }
     if (match == 1) {
-    	if (verbose>=5) printf("bios_dev: match on geometry alone (0x%02X)\n",
+    	TRACE_PRINTF("bios_dev: match on geometry alone (0x%02X)\n",
     		bios1);
 	return (geo->device = bios1);
     }
 
     device &= D_MASK(device);	/* mask to primary device */
     fd = dev_open(&dev,device,O_RDONLY);
-    if (verbose>=5) printf("bios_dev:  masked device %04X, which is %s\n", 
+    TRACE_PRINTF("bios_dev:  masked device %04X, which is %s\n", 
     			device, dev.name);
     if (lseek(fd, PART_TABLE_OFFSET-8, SEEK_SET)!=PART_TABLE_OFFSET-8)
 	die("bios_device: seek to partition table - 8");
@@ -984,13 +973,13 @@ int bios_device(GEOMETRY *geo, int device)
     dev_close(&dev);
 
 #ifdef DEBUG_PROBE
-    if (verbose>=5) {
-        printf("serial number = %08X\n", serial);
+    if (1) {
+        TRACE_PRINTF("serial number = %08X\n", serial);
         dump_pt(part);
     }
 #endif
 
-    if (verbose>=5) printf("bios_dev: geometry check found %d matches\n", match);
+    TRACE_PRINTF("bios_dev: geometry check found %d matches\n", match);
     
     snmatch = match = 0;
     bios2 = bios1 = -1;
@@ -998,8 +987,8 @@ int bios_device(GEOMETRY *geo, int device)
  /* 'bios' is set leaving the 'for' above */
     while (--bios >= 0x80) {
 	get_geom(bios, &bdata);
-	if (verbose>=5) {
-		printf("bios_dev: (0x%02X)  vol-ID=%08X  *PT=%08lX\n",
+	if (1) {
+		TRACE_PRINTF("bios_dev: (0x%02X)  vol-ID=%08X  *PT=%08lX\n",
 			bios, bdata.serial_no, (long)bdata.pt);
 #ifdef DEBUG_PROBE
 		dump_pt((void*)bdata.pt);
@@ -1014,12 +1003,12 @@ int bios_device(GEOMETRY *geo, int device)
 	    bios2 = bios;
 	}
     }
-    if (verbose>=5) printf("bios_dev: PT match found %d match%s (0x%02X)\n",
+    TRACE_PRINTF("bios_dev: PT match found %d match%s (0x%02X)\n",
     		match, match==1 ? "" : "es", bios1&255);
     if (match != 1) {
 	match = snmatch;
 	bios1 = bios2;
-	if (verbose>=5) printf("bios_dev: S/N match found %d match%s (0x%02X)\n",
+	TRACE_PRINTF("bios_dev: S/N match found %d match%s (0x%02X)\n",
     		match, match==1 ? "" : "es", bios1);
     }
 
@@ -1067,11 +1056,11 @@ static int get_bios(void)
 {
     if (fetch() || buf.s5.version<5) return -1;
 #if BETA_TEST
-	if (verbose>=5) printf("get_bios 1\n");
+	TRACE_PRINTF("get_bios 1\n");
 #endif
     dl = eq->boot_dx;
 #if BETA_TEST
-	if (verbose>=5) printf("get_bios 2\n");
+	TRACE_PRINTF("get_bios 2\n");
 #endif
     dh = eq->boot_dx >> 8;
     
@@ -1082,14 +1071,14 @@ static int get_bios(void)
 void check_bios(void)
 {
 #if BETA_TEST
-	if (verbose>=5) printf("check_bios 1\n");
+	TRACE_PRINTF("check_bios 1\n");
 #endif
     if (bios_passes_dl == DL_NOT_SET) {
 	bios_passes_dl = DL_UNKNOWN;
 	
 	if (get_bios() < 0) return;
 #if BETA_TEST
-	if (verbose>=5) printf("check_bios 2\n");
+	TRACE_PRINTF("check_bios 2\n");
 #endif
 	if (dl==0xFE) {
 	    if ( !((dh>=0x80 && dh<=DEV_MASK) || dh==0) )
@@ -1100,7 +1089,7 @@ void check_bios(void)
     }
     /* already set, leave alone */
 #if BETA_TEST
-	if (verbose>=5) printf("check_bios 3  bios_passes_dl=%d\n", (int)bios_passes_dl);
+	TRACE_PRINTF("check_bios 3  bios_passes_dl=%d\n", (int)bios_passes_dl);
 #endif
 }
 

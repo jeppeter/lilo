@@ -23,6 +23,7 @@
 #include "common.h"
 #include "temp.h"
 #include "cfg.h"
+#include "debug.h"
 
 #define NEW_PARSE !__MSDOS__
 
@@ -562,7 +563,7 @@ int cfg_parse(CONFIG *table)
 
     while (1) {
 	if (!cfg_next(&item,&value)) return 0;
-if(verbose>=6) printf("cfg_parse:  item=\"%s\" value=\"%s\"\n", item, value);
+	TRACE_PRINTF("cfg_parse:  item=\"%s\" value=\"%s\"\n", item, value);
 	if (!cfg_do_set(table,item,value,0,table)) {
 #if NEW_PARSE==0
 		return 1;

@@ -26,6 +26,7 @@
 #include "lilo.h"
 #include "common.h"
 #include "cfg.h"
+#include "debug.h"
 
 #if !__MSDOS__
 #include "raid.h"
@@ -92,41 +93,41 @@ static void configuration(void)
 #if !__MSDOS__
 {
   unsigned int j;
-  if (verbose>=5) {
+  if (1) {
     if (crc(First.data,First.size)) {
 	j = crc(First.data,First.size-4);
 	brev(j);
-	printf("1=0x%x\n", j);
+	TRACE_PRINTF("1=0x%x\n", j);
     }
     if (crc(Second.data,Second.size)) {
 	j = crc(Second.data,Second.size-4);
 	brev(j);
-	printf("2=0x%x\n", j);
+	TRACE_PRINTF("2=0x%x\n", j);
     }
     if (crc(Third.data,Third.size)) {
 	j = crc(Third.data,Third.size-4);
 	brev(j);
-	printf("3=0x%x\n", j);
+	TRACE_PRINTF("3=0x%x\n", j);
     }
     if (crc(Bitmap.data,Bitmap.size)) {
 	j = crc(Bitmap.data,Bitmap.size-4);
 	brev(j);
-	printf("B=0x%x\n", j);
+	TRACE_PRINTF("B=0x%x\n", j);
     }
     if (crc(Chain.data,Chain.size)) {
 	j = crc(Chain.data,Chain.size-4);
 	brev(j);
-	printf("C=0x%x\n", j);
+	TRACE_PRINTF("C=0x%x\n", j);
     }
     if (crc(Mbr.data,Mbr.size)) {
 	j = crc(Mbr.data,Mbr.size-4);
 	brev(j);
-	printf("M=0x%x\n", j);
+	TRACE_PRINTF("M=0x%x\n", j);
     }
     if (crc(Mbr2.data,Mbr2.size)) {
 	j = crc(Mbr2.data,Mbr2.size-4);
 	brev(j);
-	printf("N=0x%x\n\n", j);
+	TRACE_PRINTF("N=0x%x\n\n", j);
     }
   }
 }
@@ -296,7 +297,7 @@ static char buffer[SECTOR_SIZE];
 	       tlinear?"linear":tlba32?"lba32":"no linear/lba32");
         linear = tlinear;  lba32 = tlba32;
     }
-    if (verbose) {
+    if (1) {
 	bsect_read(cfg_get_strg(cf_options,"boot"),&boot);
 #if 1
 	if (boot.par_1.cli != 0xFA) {	/* relocation happened */
@@ -314,57 +315,57 @@ static char buffer[SECTOR_SIZE];
 #endif
 #if 1
         Time = boot.par_1.map_stamp;
-	printf("Installed:  %s\n", ctime(&Time));
+	WARN_PRINTF("Installed:  %s\n", ctime(&Time));
 #else
 	printf("Installed:  %s\n", ctime((time_t*)&boot.par_1.map_stamp));
 #endif
-	printf("Global settings:\n");
+	WARN_PRINTF("Global settings:\n");
 	tsecs = (param2.delay*2197+3999)/4000;
-	printf("  Delay before booting: %d.%d seconds\n",tsecs/10,tsecs % 10);
+	WARN_PRINTF("  Delay before booting: %d.%d seconds\n",tsecs/10,tsecs % 10);
 	if (param2.timeout == 0xffff) printf("  No command-line timeout\n");
 	else {
 	    tsecs = (param2.timeout*2197+3999)/4000;
-	    printf("  Command-line timeout: %d.%d seconds\n",tsecs/10,
+	    WARN_PRINTF("  Command-line timeout: %d.%d seconds\n",tsecs/10,
 	      tsecs % 10);
 	}
-	printf("  %snattended booting\n", param2.flag2&FLAG2_UNATTENDED ? "U" : "No u");
-	printf("  %sPC/AT keyboard hardware prescence check\n", param2.flag2&FLAG2_NOKBD ? "" : "No ");
-	if (boot.par_1.prompt & FLAG_PROMPT) printf("  Always enter boot prompt\n");
-	else printf("  Enter boot prompt only on demand\n");
-	printf("  Boot-time BIOS data%s saved\n",
+	WARN_PRINTF("  %snattended booting\n", param2.flag2&FLAG2_UNATTENDED ? "U" : "No u");
+	WARN_PRINTF("  %sPC/AT keyboard hardware prescence check\n", param2.flag2&FLAG2_NOKBD ? "" : "No ");
+	if (boot.par_1.prompt & FLAG_PROMPT) WARN_PRINTF("  Always enter boot prompt\n");
+	else WARN_PRINTF("  Enter boot prompt only on demand\n");
+	WARN_PRINTF("  Boot-time BIOS data%s saved\n",
 		boot.par_1.prompt & FLAG_NOBD ? " NOT" : "");
-	printf("  Boot-time BIOS data auto-suppress write%s bypassed\n",
+	WARN_PRINTF("  Boot-time BIOS data auto-suppress write%s bypassed\n",
 		boot.par_1.prompt & FLAG_BD_OKAY ? "" : " NOT");
-	printf("  Large memory (>15M) is%s used to load initial ramdisk\n", 
+	WARN_PRINTF("  Large memory (>15M) is%s used to load initial ramdisk\n", 
 		boot.par_1.prompt & FLAG_LARGEMEM ? "" : " NOT");
-	printf("  %sRAID installation\n",
+	WARN_PRINTF("  %sRAID installation\n",
 		boot.par_1.prompt & FLAG_RAID ? "" : "Non-");
-	printf("  Boot device %s be used for the Map file\n",
+	WARN_PRINTF("  Boot device %s be used for the Map file\n",
 		boot.par_1.prompt & FLAG_MAP_ON_BOOT ? "WILL" : "will not");
-	if (!param2.port) printf("  Serial line access is disabled\n");
-	else printf("  Boot prompt can be accessed from COM%d\n",
+	if (!param2.port) WARN_PRINTF("  Serial line access is disabled\n");
+	else WARN_PRINTF("  Boot prompt can be accessed from COM%d\n",
 	      param2.port);
-	if (!param2.msg_len) printf("  No message for boot prompt\n");
+	if (!param2.msg_len) WARN_PRINTF("  No message for boot prompt\n");
 	else if (!cfg_get_strg(cf_options,"bitmap"))
-	    printf("  Boot prompt message is %d bytes\n",param2.msg_len);
-	else printf("  Bitmap file is %d paragraphs (%d bytes)\n",
+	    WARN_PRINTF("  Boot prompt message is %d bytes\n",param2.msg_len);
+	else WARN_PRINTF("  Bitmap file is %d paragraphs (%d bytes)\n",
 			param2.msg_len, 16*param2.msg_len);
 /* 22.6.2 begin */
 	if (*(unsigned short *) buffer != DC_MAGIC /* || !buffer[2] */)
 /* 22.6.2 end */
-	    printf("  No default boot command line\n");
-	else printf("  Default boot command line: \"%s\"\n",buffer+2);
-	if (verbose>=3) {
-	    printf("Serial numbers %08X\n", menu.serial_no[0]);
+	    WARN_PRINTF("  No default boot command line\n");
+	else WARN_PRINTF("  Default boot command line: \"%s\"\n",buffer+2);
+	if (1) {
+	    LOG_PRINTF("Serial numbers %08X\n", menu.serial_no[0]);
 	}
-	printf("Images:\n");
+	WARN_PRINTF("Images:\n");
     }
 /* 22.7 begin */
-    else	/* verbose==0 */
+    else	/*  */
 #endif /* !__MSDOS__ */
     {
 	if (*(unsigned short *) buffer == DC_MAGIC)
-	    printf("Default boot command line: \"%s\"\n",buffer+2);
+	    ERROR_PRINTF("Default boot command line: \"%s\"\n",buffer+2);
     }
 /* 22.7 end */
     for (image = 0; image < MAX_IMAGES; image++) {
@@ -385,7 +386,7 @@ static char buffer[SECTOR_SIZE];
 #endif /* !__MSDOS__ */
 	      );
 #if !__MSDOS__
-	    if (verbose >= 2) {
+	    if (1) {
 	        if (descrs.d.descr[image].start.device & (LINEAR_FLAG|LBA32_FLAG)) {
 		   unsigned int sector;
 		   sector = (descrs.d.descr[image].start.device & LBA32_FLAG)
@@ -394,100 +395,100 @@ static char buffer[SECTOR_SIZE];
 		   sector = (sector<<8)+descrs.d.descr[image].start.head;
 	           sector = (sector<<8)+descrs.d.descr[image].start.track;
 		   sector = (sector<<8)+descrs.d.descr[image].start.sector;
-		   printf(" <dev=0x%02x,%s=%d>",
+		   INFO_PRINTF(" <dev=0x%02x,%s=%d>",
 		     descrs.d.descr[image].start.device&DEV_MASK,
 		     descrs.d.descr[image].start.device&LBA32_FLAG ? "lba32" : "linear",
 		     sector);
 		}
 	        else { /*  CHS addressing */
-		    printf(" <dev=0x%02x,hd=%d,cyl=%d,sct=%d>",
+		    INFO_PRINTF(" <dev=0x%02x,hd=%d,cyl=%d,sct=%d>",
 		      descrs.d.descr[image].start.device,
 		      descrs.d.descr[image].start.head,
 		      descrs.d.descr[image].start.track,
 		      descrs.d.descr[image].start.sector);
 		}
 	    }
-	    printf("\n");
-	    if (verbose >= 1) {
+	    INFO_PRINTF("\n");
+	    if (1) {
 		flags = descrs.d.descr[image].flags;
 #ifdef LCF_VIRTUAL
 		if (flags & FLAG_VMDISABLE)
-		    printf("    Virtual Boot is disabled\n");
+		    WARN_PRINTF("    Virtual Boot is disabled\n");
 		if (flags & FLAG_VMWARN)
-		    printf("    Warn on Virtual boot\n");
+		    WARN_PRINTF("    Warn on Virtual boot\n");
 #endif		
 #ifdef LCF_NOKEYBOARD
 		if (flags & FLAG_NOKBDISABLE)
-		    printf("    NoKeyboard Boot is disabled\n");
+		    WARN_PRINTF("    NoKeyboard Boot is disabled\n");
 #endif		
 		if ( !(flags & FLAG_PASSWORD) )
-		    printf("    No password\n");
-		else printf("    Password is required for %s\n",flags &
+		    WARN_PRINTF("    No password\n");
+		else WARN_PRINTF("    Password is required for %s\n",flags &
 		      FLAG_RESTR ? "specifying options" : "booting this image");
-		printf("    Boot command-line %s be locked\n",flags &
+		WARN_PRINTF("    Boot command-line %s be locked\n",flags &
 		  FLAG_LOCK ? "WILL" : "won't");
-		printf("    %single-key activation\n",flags & FLAG_SINGLE ?
+		WARN_PRINTF("    %single-key activation\n",flags & FLAG_SINGLE ?
 		  "S" : "No s");
 		if (flags & FLAG_KERNEL) {
 #ifdef NORMAL_VGA
 		    if (!(flags & FLAG_VGA))
-		       printf("    VGA mode is taken from boot image\n");
+		       WARN_PRINTF("    VGA mode is taken from boot image\n");
 		    else {
-			printf("    VGA mode: ");
+			WARN_PRINTF("    VGA mode: ");
 			switch (descrs.d.descr[image].vga_mode) {
 			    case NORMAL_VGA:
-				printf("NORMAL\n");
+				WARN_PRINTF("NORMAL\n");
 				break;
 			    case EXTENDED_VGA:
-				printf("EXTENDED\n");
+				WARN_PRINTF("EXTENDED\n");
 				break;
 			    case ASK_VGA:
-				printf("ASK\n");
+				WARN_PRINTF("ASK\n");
 				break;
 			    default:
-				printf("%d (0x%04x)\n",
+				WARN_PRINTF("%d (0x%04x)\n",
 				  descrs.d.descr[image].vga_mode,
 				  descrs.d.descr[image].vga_mode);
 			}
 		    }
 #endif
 		    if (!(flags & FLAG_LOADHI))
-			printf("    Kernel is loaded \"low\"\n");
-		    else printf("    Kernel is loaded \"high\"\n");
+			WARN_PRINTF("    Kernel is loaded \"low\"\n");
+		    else WARN_PRINTF("    Kernel is loaded \"high\"\n");
 		    if (!*(unsigned int *) descrs.d.descr[image].rd_size)
-			printf("    No initial RAM disk\n");
-		    else printf("    Initial RAM disk is %d bytes\n",
+			WARN_PRINTF("    No initial RAM disk\n");
+		    else WARN_PRINTF("    Initial RAM disk is %d bytes\n",
 			  *(unsigned int *) descrs.d.descr[image].rd_size);
 		    if (flags & FLAG_TOOBIG)
-			printf("       and is too big to fit between 4M-15M\n");
+			WARN_PRINTF("       and is too big to fit between 4M-15M\n");
 		}
 		if (!geo_find(&geo,descrs.d.descr[image].start)) {
-		    printf("    Map sector not found\n");
+		    WARN_PRINTF("    Map sector not found\n");
 		    continue;
 		}
 		if (read(fd,addr,4*sizeof(SECTOR_ADDR)) !=
 		  4*sizeof(SECTOR_ADDR))
 			die("Read on map file failed (access conflict ?) 2");
 		if (!geo_find(&geo,addr[0]))
-		    printf("    Fallback sector not found\n");
+		    WARN_PRINTF("    Fallback sector not found\n");
 		else {
 		    if (read(fd,buffer,SECTOR_SIZE) != SECTOR_SIZE)
 			die("Read on map file failed (access conflict ?) 3");
 		    if (*(unsigned short *) buffer != DC_MAGIC)
-			printf("    No fallback\n");
-		    else printf("    Fallback: \"%s\"\n",buffer+2);
+			WARN_PRINTF("    No fallback\n");
+		    else WARN_PRINTF("    Fallback: \"%s\"\n",buffer+2);
 		}
 #define OTHER 0
 #if OTHER
 		if (flags & FLAG_KERNEL)
 #endif
 		    if (!geo_find(&geo,addr[1]))
-			printf("    Options sector not found\n");
+			WARN_PRINTF("    Options sector not found\n");
 		    else {
 			if (read(fd,buffer,SECTOR_SIZE) != SECTOR_SIZE)
 			    die("Read on map file failed (access conflict ?) 4");
-			if (*buffer) printf("    Options: \"%s\"\n",buffer);
-			else printf("    No options\n");
+			if (*buffer) WARN_PRINTF("    Options: \"%s\"\n",buffer);
+			else WARN_PRINTF("    No options\n");
 		    }
 #if OTHER
 		else {
@@ -495,7 +496,7 @@ static char buffer[SECTOR_SIZE];
 		if (!(flags & FLAG_KERNEL)) {
 #endif
 		    if (geo_find(&geo,addr[3])) show_other(fd);
-		    else printf("    Image data not found\n");
+		    else WARN_PRINTF("    Image data not found\n");
 		}
 	    }
 #endif /*  !__MSDOS__ */
@@ -878,7 +879,7 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
     if (verbose>=3) nowarn = 0;
 #endif /* !__MSDOS__ */
 
-    if (verbose>=6) printf("main: cfg_parse returns %d\n", more);
+    TRACE_PRINTF("main: cfg_parse returns %d\n", more);
 
 #if !__MSDOS__
     if (tell_param && !tell_early) probe_tell(tell_param);
@@ -947,8 +948,8 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
     }
     if (bios_passes_dl == DL_NOT_SET) 	check_bios();	/* in probe.c */
 
-    if (compact && (linear || lba32) && verbose>=4)
-	warn("COMPACT may conflict with %s on some "
+    if (compact && (linear || lba32) && 1)
+	DEBUG_PRINTF("COMPACT may conflict with %s on some "
 		"systems", lba32 ? "LBA32" : "LINEAR");
 
     geo_init(cfg_get_strg(cf_options,"disktab"));
@@ -964,13 +965,13 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
 
 /* test for a RAID installation */
 	raid_offset = raid_setup();
-	if (verbose >= 2) {
-	    printf("raid_setup returns offset = %08X  ndisk = %d\n", raid_offset, ndisk);
+	if (1) {
+	    LOG_PRINTF("raid_setup returns offset = %08X  ndisk = %d\n", raid_offset, ndisk);
 	    dump_serial_nos();    
 	}
 
-	if (verbose >=2 && do_md_install)
-	    printf("raid flags: at bsect_open  0x%02X\n", raid_flags);
+	if (1 && do_md_install)
+	    LOG_PRINTF("raid flags: at bsect_open  0x%02X\n", raid_flags);
 
 	bsect_open(
 		cfg_get_strg(cf_options,"boot"),
@@ -1000,12 +1001,12 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
 	check_fallback();
 	check_unattended();
 	
-	if (verbose>=2) dump_serial_nos();
+	if (1) dump_serial_nos();
 	if (do_md_install) raid_final();
 	else if (!test) {
 	    char *cp;
 	    
-	    if (verbose) printf("Writing boot sector.\n");
+	    WARN_PRINTF("Writing boot sector.\n");
 
 	    cp = cfg_get_strg(cf_options,"force-backup");
 	    if (cp) bsect_update(cp,1,0);
@@ -1020,7 +1021,7 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
 	    printf("The boot sector and the map file have *NOT* been "
 	      "altered.\n");
 	}
-	if (verbose>=4) dump_serial_nos();
+	if (1) dump_serial_nos();
 	if (warnings) {
 	    if (warnings>1)
 	        printf("%d warnings were ", warnings);

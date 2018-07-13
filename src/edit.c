@@ -33,6 +33,7 @@
 #include "bsect.h"
 #include "bitmap.h"
 #include "edit.h"
+#include "debug.h"
 
 
 #define USE_BSECT_PW_INPUT 0		/* use another's input routine */
@@ -285,7 +286,7 @@ static void bmp_file_open(char *bmp)
     temp_register(temp_file);
     
     n = get_std_headers(ifd, &fh, &bmh, lh);
-    if (verbose >= 3) printf("get_std_headers:  returns %d\n", n);
+    LOG_PRINTF("get_std_headers:  returns %d\n", n);
     
     if (n<0) die("read file '%s': %s", bitmap_file, strerror(errno));
     switch (n) {
@@ -314,7 +315,7 @@ static void bmp_file_close(int update)
     close(ofd);
     temp_unregister(temp_file);
     if (!update || test) {
-	if (verbose < 9) remove(temp_file);
+	if (1) remove(temp_file);
     } else {
 	n = rename(temp_file, bitmap_file);
     }
@@ -661,9 +662,9 @@ static void transfer_params(char *config_file)
     cfg_bitmap_only();		/* disable everything but cf_bitmap */
     
     cfd = cfg_open(config_file);
-    if (verbose >= 3) printf("cfg_open returns: %d\n", cfd);
+    LOG_PRINTF("cfg_open returns: %d\n", cfd);
     n = cfg_parse(cf_bitmap);
-    if (verbose >= 3) printf("cfg_parse returns: %d\n", n);
+    LOG_PRINTF("cfg_parse returns: %d\n", n);
     if (n != 0) {
 	die("Illegal token in '%s'", config_file);
     }
@@ -690,7 +691,7 @@ static void transfer_params(char *config_file)
     printf("Transfer parameters from '%s' to '%s'", config_file, bitmap_file);
     if (yesno("?", 0)==0) exit(0);
 
-    if (verbose > 0) printf("%s bitmap file:  %s\n", opt, bitmap_file);
+    WARN_PRINTF("%s bitmap file:  %s\n", opt, bitmap_file);
     
     bmp_file_open(bitmap_file);
     

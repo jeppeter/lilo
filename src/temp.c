@@ -17,6 +17,7 @@
 
 #include "lilo.h"
 #include "common.h"
+#include "debug.h"
 #ifndef LILO_BINARY
 #include "temp.h"
 #include "loader.i"
@@ -66,7 +67,7 @@ void temp_remove(void)
 	next = list->next;
 	if (remove(list->name) < 0)
 	    warn("(temp) %s: %s",list->name,strerror(errno));
-	else if (verbose>=2) printf("Removed temporary file %s\n",list->name);
+	else INFO_PRINTF("Removed temporary file %s\n",list->name);
 	free(list->name);
 	free(list);
 	list = next;
