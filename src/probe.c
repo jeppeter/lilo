@@ -8,7 +8,7 @@
  * in the source directory.
  */
 
-/*#define DEBUG_PROBE*/
+#define DEBUG_PROBE
 #define BITMAP 0	/* change to 1 when do_bitmap is filled in */
 #define VOLID  1	/* change to 1 when do_volid is filled in */
 
@@ -318,7 +318,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
     if (notice(4)) exit(0);
 #endif
 #ifdef DEBUG_PROBE
-	printf("get_geom: drive = 0x%02X\n", drive);
+	TRACE_PRINTF("get_geom: drive = 0x%02X\n", drive);
 	fflush(stdout);
 #endif
     if (drive >= 0 && drive < buf.s5.mflp) {
@@ -333,7 +333,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
 	if (!hdp[drive-0x80]) {
 	    i = get_geom(drive-1, geom);
 #ifdef DEBUG_PROBE
-		printf("get_geom recursive return = %d  AH=0x%02X\n", i, i-1);
+		TRACE_PRINTF("get_geom recursive return = %d  AH=0x%02X\n", i, i-1);
 		fflush(stdout);
 #endif
 	    if (i) return i;
@@ -341,7 +341,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
 	hd = hdp[drive-0x80];
     } else return 1;
 #ifdef DEBUG_PROBE
-	printf("get_geom:  hd = %08X\n", (int)hd);
+	TRACE_PRINTF("get_geom:  hd = %08X\n", (int)hd);
 	fflush(stdout);
 #endif
     
@@ -355,7 +355,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
     /* regs.edx = drive;			*/
 
 #ifdef DEBUG_PROBE
-	printf("get_geom: int13, fn=15\n");
+	TRACE_PRINTF("get_geom: int13, fn=15\n");
 	fflush(stdout);
 #endif
    
@@ -369,7 +369,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
    /* regs.edx = drive;			*/
    
 #ifdef DEBUG_PROBE
-	printf("get_geom: int13, fn=08\n");
+	TRACE_PRINTF("get_geom: int13, fn=08\n");
 	fflush(stdout);
 #endif
    
@@ -410,14 +410,14 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
    }
 
 #ifdef DEBUG_PROBE
-   printf("get_geom:  PT->%08X  S/N=%08X\n", (int)geom->pt, geom->serial_no);
+   TRACE_PRINTF("get_geom:  PT->%08X  S/N=%08X\n", (int)geom->pt, geom->serial_no);
 #endif
       
    /* regs.eax = 0x4100;      check EDD extensions present */
    /* regs.edx = drive;				*/
    /* regs.ebx = 0x55AA;			*/
 #ifdef DEBUG_PROBE
-	printf("get_geom: int13, fn=41\n");
+	TRACE_PRINTF("get_geom: int13, fn=41\n");
 	fflush(stdout);
 #endif
    if ((hd->fn41.flags&1)==0 && (hd->fn41.bx)==(unsigned short)0xAA55) {
@@ -430,7 +430,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
 
       dp = (edd_t*)hdp[drive-0x80 + 1];
 #ifdef DEBUG_PROBE
-	printf("get_geom:  EDD  dp = %08X\n", (int)dp);
+	TRACE_PRINTF("get_geom:  EDD  dp = %08X\n", (int)dp);
 	fflush(stdout);
 #endif
     /* update the pointer to the next drive */
@@ -440,7 +440,7 @@ static int get_geom(unsigned int drive, struct disk_geom *geom)
       /* regs.edx = drive;		*/
       
 #ifdef DEBUG_PROBE
-	printf("get_geom: int13, fn=48\n");
+	TRACE_PRINTF("get_geom: int13, fn=48\n");
 	fflush(stdout);
 #endif
 

@@ -88,6 +88,7 @@ void map_create(char *name)
     (void) close(fd);
     memset(buffer,0,SECTOR_SIZE);
     *(unsigned short *) buffer = DC_MGOFF;
+	TRACE_PRINTF("map_file [%s]\n",name);
     map_file = geo_open(&map_geo,name,O_RDWR);
     bios_map = map_geo.device;	/* set device code of map file */
     if (do_md_install) {

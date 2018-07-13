@@ -1409,20 +1409,29 @@ static int timestamp = 0;
 #endif
     if (pass<1) {	/* BIOS_TT logic */
 	MENUTABLE *menu = &menuparams;
+	TRACE_PRINTF("\n");
 	map_descrs(&descrs, menu->mt_descr, &menuparams.dflcmd);
+	TRACE_PRINTF("\n");
 	menuparams.raid_dev_mask = raid_mask((int*)menuparams.raid_offset);
+	TRACE_PRINTF("\n");
 	memcpy(menuparams.serial_no, serial_no, sizeof(serial_no));
 	memcpy(table+256, &menuparams, sizeof(menuparams));
 	((int*)table)[SECTOR_SIZE/sizeof(int)-2] = crc32(table, SECTOR_SIZE-2*sizeof(int), CRC_POLY1);
+	TRACE_PRINTF("\n");
 	map_begin_section();
+	TRACE_PRINTF("\n");
 	map_add_sector(table);
 #ifdef LCF_FIRST6
+	TRACE_PRINTF("\n");
 	/* still use 5 byte address */
 	(void) map_write(&param2.keytab,1,0,0);
 #else
+	TRACE_PRINTF("\n");
 	(void) map_write(&param2.keytab,1,0);
 #endif
+	TRACE_PRINTF("\n");
 	map_close(&param2, here2);
+	TRACE_PRINTF("\n");
     }	/* if (pass<1) ...	*/
 
 if (pass>=0) {

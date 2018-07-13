@@ -1000,8 +1000,9 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
 #endif
 	check_fallback();
 	check_unattended();
-	
+	TRACE_PRINTF("\n");
 	if (1) dump_serial_nos();
+	TRACE_PRINTF("\n");
 	if (do_md_install) raid_final();
 	else if (!test) {
 	    char *cp;
@@ -1009,9 +1010,9 @@ fprintf(errstd,"REBOOT=\"%s\"\n", reboot_arg);
 	    WARN_PRINTF("Writing boot sector.\n");
 
 	    cp = cfg_get_strg(cf_options,"force-backup");
-	    if (cp) bsect_update(cp,1,0);
-	    else bsect_update(cfg_get_strg(cf_options,"backup"),0,0);
-
+	    if (cp){ bsect_update(cp,1,0);}
+	    else { bsect_update(cfg_get_strg(cf_options,"backup"),0,0);}
+	   TRACE_PRINTF("\n");
 	} 
 	else {
 	    bsect_cancel();
